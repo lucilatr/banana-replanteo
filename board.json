@@ -11,7 +11,8 @@
       "subtasks": [
         {
           "id": "s62",
-          "text": "armar sistema"
+          "text": "armar sistema",
+          "assignee": ""
         },
         {
           "id": "s63",
