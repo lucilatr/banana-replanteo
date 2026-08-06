@@ -49,6 +49,24 @@
   .stat{font-size:12.5px;color:var(--muted);margin-left:auto}
   .hidden{display:none!important}
   .pin{background:#fbf7ea;border:1px solid var(--med-bg);border-left:3px solid var(--med);border-radius:10px;padding:12px 14px;margin-bottom:4px;font-size:14px;line-height:1.45;color:var(--ink)}
+  .titlerow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  /* Kanban */
+  .kanban{display:flex;gap:14px;align-items:flex-start;overflow-x:auto;padding:4px 0 12px}
+  .kcol{flex:1 1 0;min-width:230px;background:#f1efe9;border:1px solid var(--line);border-radius:12px;padding:10px}
+  .kcol-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 6px 10px}
+  .kcol-head.wip{color:#9c7413}
+  .kcol-head.done{color:#3d8a5f}
+  .kcount{font-weight:600;color:var(--muted)}
+  .kcards{display:flex;flex-direction:column;gap:8px}
+  .kcard{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 11px;box-shadow:var(--shadow);border-left:3px solid transparent}
+  .kcard.lvl-high{border-left-color:var(--high)}
+  .kcard.lvl-med{border-left-color:var(--med)}
+  .kcard.lvl-low{border-left-color:var(--low)}
+  .ktext{font-size:13.5px;line-height:1.4;word-wrap:break-word}
+  .kmeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+  .ksubs{font-size:11px;color:var(--muted)}
+  .kempty{color:var(--line-strong);font-size:12px;font-style:italic;padding:8px 6px}
 
   section.group{margin-top:30px}
   .group-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
@@ -178,7 +196,10 @@
 <body>
 <div class="wrap">
   <header class="page">
-    <h1>Lista de tareas</h1>
+    <div class="titlerow">
+      <h1>Lista de tareas</h1>
+      <button class="btn" id="viewBtn">Tablero Kanban</button>
+    </div>
     <div class="toolbar">
       <button class="btn ghost hidden" id="resetBtn">Restaurar lista original</button>
       <button class="btn ghost hidden" id="clearPrioBtn">Limpiar prioridades</button>
@@ -225,6 +246,7 @@ let editor = false;      // se activa al validar tu token de GitHub
 let dirty = false;       // cambios sin commitear todavía
 let curSha = null;       // sha actual de board.json (necesario para el commit)
 let lastServer = '';
+let view = /kanban/i.test(location.hash||'') ? 'kanban' : 'lista';   // 'lista' | 'kanban'
 
 const CAT_NAME = {dev:'Dev', arte:'Arte', animacion:'Animación'};
 function catLabel(k){ return CAT_NAME[k] || 'Categoría'; }
@@ -404,16 +426,48 @@ function setSync(s){
 
 function updateChrome(){
   const show=(id,on)=>{ const el=document.getElementById(id); if(el) el.classList.toggle('hidden', !on); };
-  show('resetBtn', editor);
-  show('clearPrioBtn', editor);
-  show('importBtn', editor);
-  show('authBtn', editor);   // solo visible para vos (ya logueada); los demás no ven nada de editar
+  const kan = view==='kanban';
+  show('resetBtn', editor && !kan);
+  show('clearPrioBtn', editor && !kan);
+  show('importBtn', editor && !kan);
+  show('authBtn', editor);
   const ab=document.getElementById('authBtn'); if(ab) ab.textContent = 'Cerrar edición';
+  const h1=document.querySelector('.titlerow h1'); if(h1) h1.textContent = kan ? 'Tablero Kanban' : 'Lista de tareas';
+  const vb=document.getElementById('viewBtn'); if(vb) vb.textContent = kan ? '← Lista' : 'Tablero Kanban';
+  const pin=document.querySelector('.pin'); if(pin) pin.classList.toggle('hidden', kan);
   const foot=document.getElementById('foot');
   if(foot) foot.innerHTML = 'Notas de la reunión "Banana Airways · Visual Direction Review" — 6 ago 2026.' + (editor ? '<br/>Editá el texto haciendo clic en cualquier nota. Agregá notas con el botón al final.' : '');
 }
 
-function render(){
+function render(){ if(view==='kanban') renderKanban(); else renderList(); }
+
+function kcard(t){
+  const el=document.createElement('div');
+  el.className='kcard'+(t.prio?' lvl-'+t.level:'');
+  const lvl=t.prio?`<span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span>`:'';
+  const stages=(t.stages||[]).map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('');
+  const nsubs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).length;
+  el.innerHTML=`<div class="ktext">${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div>`;
+  return el;
+}
+function renderKanban(){
+  const app=document.getElementById('app'); app.innerHTML='';
+  const cols=[{key:'',name:'Sin status',cls:''},{key:'wip',name:'WIP',cls:'wip'},{key:'done',name:'Done',cls:'done'}];
+  const board=document.createElement('div'); board.className='kanban';
+  cols.forEach(c=>{
+    const items=state.tasks.filter(t=>(t.status||'')===c.key);
+    const col=document.createElement('div'); col.className='kcol';
+    col.innerHTML=`<div class="kcol-head ${c.cls}"><span>${c.name}</span><span class="kcount">${items.length}</span></div>`;
+    const list=document.createElement('div'); list.className='kcards';
+    if(items.length===0) list.innerHTML='<div class="kempty">—</div>';
+    else items.forEach(t=> list.appendChild(kcard(t)));
+    col.appendChild(list); board.appendChild(col);
+  });
+  app.appendChild(board);
+  const st=document.getElementById('stat'); if(st) st.textContent=`${state.tasks.length} notas`;
+}
+
+function renderList(){
   const app=document.getElementById('app'); app.innerHTML='';
 
   const prio = state.tasks.filter(t=>t.prio)
@@ -677,6 +731,14 @@ function importJson(file){
 document.getElementById('exportBtn').addEventListener('click', exportJson);
 document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change', e=>{ if(e.target.files[0]) importJson(e.target.files[0]); e.target.value=''; });
+
+// toggle Lista <-> Kanban
+document.getElementById('viewBtn').addEventListener('click', ()=>{
+  view = view==='kanban' ? 'lista' : 'kanban';
+  if(view==='kanban'){ try{ location.hash='kanban'; }catch(e){} }
+  else { try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} }
+  updateChrome(); render();
+});
 
 boot();
 </script>
