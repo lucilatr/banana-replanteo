@@ -60,7 +60,8 @@
       "subtasks": [
         {
           "id": "s90",
-          "text": "anim se lo come"
+          "text": "anim se lo come",
+          "assignee": "MATEO"
         },
         {
           "id": "s91",
