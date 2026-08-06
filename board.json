@@ -308,7 +308,10 @@
       "text": "Al cruzar una zona nuclear los pollos se enloquecen, mutan, se vuelven violentos y se atacan entre sí.",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 13,
       "subtasks": [
         {
