@@ -135,15 +135,6 @@
       ]
     },
     {
-      "id": "t18",
-      "category": "dev",
-      "text": "fusionar mecánicas (tornado gigante + zonas nucleares) para navegación más compleja.",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t19",
       "category": "dev",
       "text": "Idea futura: explosión de personaje que rompe el avión (complejo → etapa posterior).",
