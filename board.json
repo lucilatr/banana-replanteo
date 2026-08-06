@@ -264,7 +264,8 @@
         },
         {
           "id": "s108",
-          "text": "Diseño contador monetario"
+          "text": "Diseño contador monetario",
+          "assignee": "CARLINI"
         }
       ]
     },
