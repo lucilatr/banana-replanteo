@@ -211,15 +211,6 @@
       "order": 0
     },
     {
-      "id": "t28",
-      "category": "arte",
-      "text": "Humos de colores para las zonas radioactivas, para alertar del peligro inminente.",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t29",
       "category": "arte",
       "text": "Explosiones de personajes + decals sobre el avión; buscar efectos de líquidos (sustancia verde) en el Asset Store de Unity.",
