@@ -141,6 +141,18 @@
   .stage-menu input{width:15px;height:15px;cursor:pointer}
   .stage-menu input[data-tag="demo"]{accent-color:#2f6fb0}
   .stage-menu input[data-tag="trailer"]{accent-color:#3d8a5f}
+  .chip.wip{background:#f8eece;color:#9c7413}
+  .chip.done{background:#e5f2e9;color:#3d8a5f}
+  .status{position:relative}
+  .status-btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);font-size:12px;padding:4px 9px;border-radius:7px;cursor:pointer}
+  .status-btn:hover{background:#fbfaf7}
+  .status-btn .caret{font-size:9px;opacity:.6}
+  .status-menu{position:absolute;top:calc(100% + 6px);right:0;left:auto;z-index:20;background:var(--card);border:1px solid var(--line-strong);border-radius:9px;box-shadow:0 6px 24px rgba(40,38,34,.14);padding:6px;min-width:140px}
+  .status-menu.hidden{display:none}
+  .status-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13px;padding:7px 9px;border-radius:6px;cursor:pointer;color:var(--ink)}
+  .status-menu button:hover{background:#f6f4ef}
+  .status-menu button.on{background:#eef1f5;font-weight:600}
+  .status-menu button.none{color:var(--muted)}
 
   .del{border:0;background:transparent;color:var(--line-strong);cursor:pointer;font-size:17px;line-height:1;padding:2px 4px;flex:0 0 auto;margin-top:-2px;transition:color .12s}
   .task:hover .del{color:var(--muted)}
@@ -451,6 +463,7 @@ function taskEl(t){
       </div>
       <div class="controls">
         <span class="stage-ro">${stageChips || '<span class="muted">—</span>'}</span>
+        ${t.prio && t.status ? `<span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span>` : ''}
       </div>`;
     return el;
   }
@@ -467,6 +480,16 @@ function taskEl(t){
     </div>` : '';
 
   const subsEd=(t.subtasks||[]).map(s=>`<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><button class="sub-del" title="Eliminar subtarea">×</button></div>`).join('');
+  const _st=t.status||'', _stN={wip:'WIP',done:'Done'};
+  const statusCtl = t.prio ? `
+      <span class="status">
+        <button class="status-btn" type="button">${_st?`<span class="chip ${_st}">${_stN[_st]}</span>`:'<span class="caret">Estado ▾</span>'}</button>
+        <div class="status-menu hidden">
+          <button data-status="wip" class="${_st==='wip'?'on':''}">WIP</button>
+          <button data-status="done" class="${_st==='done'?'on':''}">Done</button>
+          <button data-status="" class="none">— Sin estado</button>
+        </div>
+      </span>` : '';
   el.innerHTML = `
     <input type="checkbox" class="check" ${t.prio?'checked':''} title="Marcar como prioridad">
     <button class="addsub" type="button" title="Agregar subtarea">+</button>
@@ -483,6 +506,7 @@ function taskEl(t){
           <label><input type="checkbox" data-tag="trailer" ${t.stages.includes('trailer')?'checked':''}> Trailer</label>
         </div>
       </span>
+      ${statusCtl}
     </div>
     <button class="del" title="Eliminar nota">×</button>`;
   return el;
@@ -566,11 +590,22 @@ app.addEventListener('click', e=>{
   if(sBtn){
     const menu=sBtn.parentElement.querySelector('.stage-menu');
     const wasHidden=menu.classList.contains('hidden');
-    document.querySelectorAll('.stage-menu, .cat-menu').forEach(m=>m.classList.add('hidden'));
+    document.querySelectorAll('.stage-menu, .status-menu').forEach(m=>m.classList.add('hidden'));
     if(wasHidden) menu.classList.remove('hidden');
     e.stopPropagation(); return;
   }
   if(e.target.closest('.stage-menu')){ e.stopPropagation(); return; }
+
+  const stBtn=e.target.closest('.status-btn');
+  if(stBtn){
+    const menu=stBtn.parentElement.querySelector('.status-menu');
+    const wasHidden=menu.classList.contains('hidden');
+    document.querySelectorAll('.stage-menu, .status-menu').forEach(m=>m.classList.add('hidden'));
+    if(wasHidden) menu.classList.remove('hidden');
+    e.stopPropagation(); return;
+  }
+  const stOpt=e.target.closest('.status-menu button[data-status]');
+  if(stOpt && taskDiv){ getTask(taskDiv.dataset.id).status=stOpt.dataset.status; save(); render(); return; }
 });
 
 app.addEventListener('blur', e=>{
@@ -590,7 +625,7 @@ app.addEventListener('blur', e=>{
 app.addEventListener('keydown', e=>{
   if((e.target.classList.contains('text')||e.target.classList.contains('sub-text')) && e.key==='Enter'){ e.preventDefault(); e.target.blur(); }
 });
-document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .cat-menu').forEach(m=>m.classList.add('hidden')); });
+document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .status-menu').forEach(m=>m.classList.add('hidden')); });
 
 // toolbar
 document.getElementById('resetBtn').addEventListener('click', ()=>{
