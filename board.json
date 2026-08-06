@@ -49,7 +49,7 @@
       "category": "dev",
       "text": "Hambre / comportamientos extremos: un pasajero se come al de al lado si no lo alimentás. Mantenerlos alimentados y calmos.",
       "prio": true,
-      "level": "med",
+      "level": "low",
       "stages": [],
       "order": 3,
       "subtasks": [
