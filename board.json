@@ -360,7 +360,8 @@
         "demo",
         "trailer"
       ],
-      "order": 14
+      "order": 14,
+      "assignee": "FER"
     },
     {
       "id": "t47",
