@@ -300,7 +300,8 @@
       "prio": true,
       "level": "med",
       "stages": [
-        "demo"
+        "demo",
+        "trailer"
       ],
       "order": 11,
       "subtasks": [
