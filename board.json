@@ -305,6 +305,10 @@
         {
           "id": "s88",
           "text": "humo de colores"
+        },
+        {
+          "id": "s89",
+          "text": ""
         }
       ]
     },
@@ -456,5 +460,5 @@
       "subtasks": []
     }
   ],
-  "seq": 89
+  "seq": 90
 }
