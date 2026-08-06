@@ -383,15 +383,6 @@
       "status": "done"
     },
     {
-      "id": "t49",
-      "category": "dev",
-      "text": "Criatura gigante: un pasajero se transforma en un bicho enorme dentro del avión que te quiere matar.",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t50",
       "category": "arte",
       "text": "Luces dinámicas animadas en emergencias / momentos de terror.",
