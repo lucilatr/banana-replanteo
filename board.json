@@ -283,7 +283,8 @@
         "trailer"
       ],
       "order": 10,
-      "subtasks": []
+      "subtasks": [],
+      "status": "done"
     },
     {
       "id": "t40",
