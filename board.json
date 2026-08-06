@@ -160,7 +160,10 @@
       "text": "Personalización y variedad de pasajeros (cuerpos, ropa, edades, accesorios de cabeza / pelucas, props)",
       "prio": true,
       "level": "high",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 6
     },
     {
