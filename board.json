@@ -242,7 +242,7 @@
         },
         {
           "id": "s57",
-          "text": "contador monetario"
+          "text": "implementación contador monetario"
         },
         {
           "id": "s83",
@@ -259,6 +259,10 @@
         {
           "id": "s105",
           "text": "Diseño contador de pasajeros"
+        },
+        {
+          "id": "s108",
+          "text": ""
         }
       ]
     },
@@ -482,5 +486,5 @@
       "subtasks": []
     }
   ],
-  "seq": 108
+  "seq": 109
 }
