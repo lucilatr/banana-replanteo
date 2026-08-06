@@ -220,15 +220,6 @@
       "order": 0
     },
     {
-      "id": "t34",
-      "category": "dev",
-      "text": "Trabajar con conceptos base para una implementación inicial, reemplazables más adelante.",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t35",
       "category": "dev",
       "text": "UI",
