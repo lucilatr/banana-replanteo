@@ -241,7 +241,10 @@
       "text": "UI",
       "prio": true,
       "level": "high",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 7,
       "subtasks": [
         {
