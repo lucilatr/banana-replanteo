@@ -313,7 +313,8 @@
       "subtasks": [
         {
           "id": "s66",
-          "text": "anim enloquece"
+          "text": "anim enloquece",
+          "assignee": "MATEO"
         },
         {
           "id": "s67",
