@@ -364,6 +364,10 @@
         {
           "id": "s87",
           "text": "Alrededores de la zona todo en gris"
+        },
+        {
+          "id": "s99",
+          "text": ""
         }
       ]
     },
@@ -493,5 +497,5 @@
       "subtasks": []
     }
   ],
-  "seq": 99
+  "seq": 100
 }
