@@ -275,7 +275,8 @@
       ],
       "order": 10,
       "subtasks": [],
-      "status": "done"
+      "status": "done",
+      "assignee": "VALEN"
     },
     {
       "id": "t40",
