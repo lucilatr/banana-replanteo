@@ -288,8 +288,9 @@
           "text": "Animacion caminata con resistencia por el viento"
         }
       ],
-      "status": "done",
-      "assignee": "VALEN"
+      "status": "wip",
+      "assignee": "VALEN",
+      "doneAt": null
     },
     {
       "id": "t40",
