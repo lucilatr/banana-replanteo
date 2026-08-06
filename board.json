@@ -274,7 +274,13 @@
       "prio": true,
       "level": "high",
       "stages": [],
-      "order": 10
+      "order": 10,
+      "subtasks": [
+        {
+          "id": "s73",
+          "text": ""
+        }
+      ]
     },
     {
       "id": "t40",
@@ -396,5 +402,5 @@
       "order": 0
     }
   ],
-  "seq": 73
+  "seq": 74
 }
