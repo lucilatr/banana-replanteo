@@ -333,10 +333,11 @@
         {
           "id": "s107",
           "text": "Implementacion mas viento afuera si saltas",
-          "assignee": "VALEN"
+          "assignee": "VALEN",
+          "status": "done"
         }
       ],
-      "status": "",
+      "status": "wip",
       "assignee": "VALEN",
       "doneAt": null
     },
