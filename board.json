@@ -337,6 +337,10 @@
         {
           "id": "s86",
           "text": "zona nuclear asset para sumar a mapa"
+        },
+        {
+          "id": "s87",
+          "text": ""
         }
       ]
     },
@@ -446,5 +450,5 @@
       "subtasks": []
     }
   ],
-  "seq": 87
+  "seq": 88
 }
