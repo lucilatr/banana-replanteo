@@ -408,7 +408,17 @@
       "level": "med",
       "stages": [],
       "order": 0
+    },
+    {
+      "id": "t76",
+      "category": "",
+      "text": "Nueva nota",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": []
     }
   ],
-  "seq": 76
+  "seq": 77
 }
