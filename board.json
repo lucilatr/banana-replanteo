@@ -143,7 +143,10 @@
       "text": "Mejorar la expresividad de los pasajeros para generar conexión emocional (que den interés o rechazo). Rig facial estilo stop-motion, expresiones extremas (risa, enojo, pánico).",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 5,
       "subtasks": [
         {
