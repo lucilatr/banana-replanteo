@@ -547,7 +547,7 @@ function taskEl(t){
       </div>
       <div class="controls">
         <span class="stage-ro">${stageChips || '<span class="muted">—</span>'}</span>
-        ${t.prio && t.status ? `<span class="status"><span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span></span>` : ''}
+        ${t.status ? `<span class="status"><span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span></span>` : ''}
         ${t.prio && t.assignee ? `<span class="assign"><span class="chip assignee">${esc(t.assignee)}</span></span>` : ''}
       </div>`;
     return el;
@@ -566,7 +566,7 @@ function taskEl(t){
 
   const subsEd=(t.subtasks||[]).map(s=>`<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><button class="sub-del" title="Eliminar subtarea">×</button></div>`).join('');
   const _st=t.status||'', _stN={wip:'WIP',done:'Done'};
-  const statusCtl = t.prio ? `
+  const statusCtl = `
       <span class="status">
         <button class="status-btn" type="button">${_st?`<span class="chip ${_st}">${_stN[_st]}</span>`:'<span class="caret">Status ▾</span>'}</button>
         <div class="status-menu hidden">
@@ -574,7 +574,7 @@ function taskEl(t){
           <button data-status="done" class="${_st==='done'?'on':''}">Done</button>
           <button data-status="" class="none">— Sin status</button>
         </div>
-      </span>` : '';
+      </span>`;
   const _as=t.assignee||'';
   const assignCtl = t.prio ? `
       <span class="assign">
