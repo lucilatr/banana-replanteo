@@ -348,7 +348,10 @@
       "text": "Mejorar las texturas de los personajes",
       "prio": true,
       "level": "high",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 14
     },
     {
