@@ -34,7 +34,9 @@
           "text": "anim vuelve a la normalidad",
           "assignee": "MATEO"
         }
-      ]
+      ],
+      "doneAt": null,
+      "status": ""
     },
     {
       "id": "t4",
@@ -68,7 +70,9 @@
           "text": "modelo con hueso en el medio",
           "assignee": "FER"
         }
-      ]
+      ],
+      "doneAt": null,
+      "status": ""
     },
     {
       "id": "t6",
@@ -109,13 +113,14 @@
       "level": "med",
       "stages": [],
       "order": 96,
-      "status": "wip",
+      "status": "",
       "subtasks": [
         {
           "id": "s95",
           "text": "maquina hacedora de extracto de banana: pones 3 y llenas jeringa"
         }
-      ]
+      ],
+      "doneAt": null
     },
     {
       "id": "t15",
@@ -139,7 +144,9 @@
           "id": "s97",
           "text": "mascara que te tenes que poner al pasar por una zona nuclear"
         }
-      ]
+      ],
+      "doneAt": null,
+      "status": ""
     },
     {
       "id": "t19",
@@ -173,7 +180,8 @@
           "assignee": "MATEO"
         }
       ],
-      "status": "wip"
+      "status": "",
+      "doneAt": null
     },
     {
       "id": "t22",
@@ -255,7 +263,8 @@
         },
         {
           "id": "s57",
-          "text": "implementación contador monetario"
+          "text": "implementación contador monetario",
+          "status": "done"
         },
         {
           "id": "s83",
@@ -290,7 +299,9 @@
           "text": "Diseño altitud",
           "assignee": "CARLINI"
         }
-      ]
+      ],
+      "doneAt": null,
+      "status": "wip"
     },
     {
       "id": "t38",
@@ -324,7 +335,7 @@
           "assignee": "VALEN"
         }
       ],
-      "status": "wip",
+      "status": "",
       "assignee": "VALEN",
       "doneAt": null
     },
@@ -348,7 +359,9 @@
           "id": "s89",
           "text": "liquido verde en el piso alrededor del reactor"
         }
-      ]
+      ],
+      "doneAt": null,
+      "status": ""
     },
     {
       "id": "t42",
@@ -398,7 +411,9 @@
           "assignee": "PABLO"
         }
       ],
-      "assignee": ""
+      "assignee": "",
+      "doneAt": null,
+      "status": ""
     },
     {
       "id": "t43",
@@ -429,7 +444,8 @@
           "text": "Definir qué otra comida queremos sumar"
         }
       ],
-      "status": "wip"
+      "status": "",
+      "doneAt": null
     },
     {
       "id": "t48",
