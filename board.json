@@ -181,7 +181,8 @@
       "prio": true,
       "level": "high",
       "stages": [],
-      "order": 54
+      "order": 54,
+      "assignee": "Fernando"
     },
     {
       "id": "t24",
