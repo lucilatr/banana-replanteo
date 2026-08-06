@@ -164,7 +164,8 @@
       "subtasks": [
         {
           "id": "s60",
-          "text": "poses"
+          "text": "poses",
+          "assignee": "FER"
         },
         {
           "id": "s111",
