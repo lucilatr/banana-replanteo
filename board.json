@@ -70,7 +70,8 @@
       "prio": false,
       "level": "med",
       "stages": [],
-      "order": 0
+      "order": 0,
+      "status": "done"
     },
     {
       "id": "t7",
