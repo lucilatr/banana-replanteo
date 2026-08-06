@@ -414,7 +414,17 @@
       ],
       "order": 77,
       "subtasks": []
+    },
+    {
+      "id": "t80",
+      "category": "",
+      "text": "Nueva nota",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": []
     }
   ],
-  "seq": 80
+  "seq": 81
 }
