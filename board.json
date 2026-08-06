@@ -193,15 +193,6 @@
       "order": 0
     },
     {
-      "id": "t25",
-      "category": "arte",
-      "text": "Central nuclear: concepto limpio + modelo base (mesh) para integrar al mapa.",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t26",
       "category": "arte",
       "text": "Zona de equipaje: rediseñarla como repisa funcional para poner maletas (hoy tiene partes despegadas y huecos).",
@@ -367,7 +358,7 @@
         },
         {
           "id": "s99",
-          "text": "Central nuclear: concepto limpio + modelo base (mesh) para integrar al mapa."
+          "text": ""
         }
       ]
     },
