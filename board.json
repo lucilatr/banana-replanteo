@@ -475,7 +475,17 @@
       "stages": [],
       "order": 0,
       "subtasks": []
+    },
+    {
+      "id": "t93",
+      "category": "",
+      "text": "Nueva nota",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": []
     }
   ],
-  "seq": 93
+  "seq": 94
 }
