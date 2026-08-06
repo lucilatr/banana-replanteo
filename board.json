@@ -272,7 +272,8 @@
         },
         {
           "id": "s84",
-          "text": "Altitud (en la cabina o en pantalla de player?)"
+          "text": "Altitud (en la cabina o en pantalla de player?)",
+          "status": "done"
         },
         {
           "id": "s104",
