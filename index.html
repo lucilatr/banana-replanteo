@@ -143,7 +143,7 @@
   .stage-menu input[data-tag="trailer"]{accent-color:#3d8a5f}
   .chip.wip{background:#f8eece;color:#9c7413}
   .chip.done{background:#e5f2e9;color:#3d8a5f}
-  .status{position:relative}
+  .status{position:relative;align-self:stretch;display:flex;align-items:center;padding-left:12px;border-left:1px solid var(--line)}
   .status-btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);font-size:12px;padding:4px 9px;border-radius:7px;cursor:pointer}
   .status-btn:hover{background:#fbfaf7}
   .status-btn .caret{font-size:9px;opacity:.6}
@@ -463,7 +463,7 @@ function taskEl(t){
       </div>
       <div class="controls">
         <span class="stage-ro">${stageChips || '<span class="muted">—</span>'}</span>
-        ${t.prio && t.status ? `<span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span>` : ''}
+        ${t.prio && t.status ? `<span class="status"><span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span></span>` : ''}
       </div>`;
     return el;
   }
@@ -483,11 +483,11 @@ function taskEl(t){
   const _st=t.status||'', _stN={wip:'WIP',done:'Done'};
   const statusCtl = t.prio ? `
       <span class="status">
-        <button class="status-btn" type="button">${_st?`<span class="chip ${_st}">${_stN[_st]}</span>`:'<span class="caret">Estado ▾</span>'}</button>
+        <button class="status-btn" type="button">${_st?`<span class="chip ${_st}">${_stN[_st]}</span>`:'<span class="caret">Status ▾</span>'}</button>
         <div class="status-menu hidden">
           <button data-status="wip" class="${_st==='wip'?'on':''}">WIP</button>
           <button data-status="done" class="${_st==='done'?'on':''}">Done</button>
-          <button data-status="" class="none">— Sin estado</button>
+          <button data-status="" class="none">— Sin status</button>
         </div>
       </span>` : '';
   el.innerHTML = `
