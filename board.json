@@ -37,7 +37,10 @@
       "text": "Estados de pasajero: normal → desesperado (mutación)",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 78,
       "subtasks": []
     },
