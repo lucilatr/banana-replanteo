@@ -74,7 +74,10 @@
       "text": "Mapa procedural con reactores nucleares en zonas específicas",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 79
     },
     {
