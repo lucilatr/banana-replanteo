@@ -168,7 +168,8 @@
         },
         {
           "id": "s111",
-          "text": "Mejoras idle"
+          "text": "Mejoras idle",
+          "assignee": "MATEO"
         }
       ],
       "status": "wip"
