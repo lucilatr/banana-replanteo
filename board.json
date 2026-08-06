@@ -408,10 +408,10 @@
       "id": "t80",
       "category": "",
       "text": "menu onboarding",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0,
+      "order": 103,
       "subtasks": []
     },
     {
@@ -455,5 +455,5 @@
       "subtasks": []
     }
   ],
-  "seq": 103
+  "seq": 104
 }
