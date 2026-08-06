@@ -171,6 +171,23 @@
   .status-menu button:hover{background:#f6f4ef}
   .status-menu button.on{background:#eef1f5;font-weight:600}
   .status-menu button.none{color:var(--muted)}
+  .chip.assignee{background:#ece8f3;color:#5b4b73}
+  .assign{position:relative;align-self:stretch;display:flex;align-items:center;padding-left:12px;border-left:1px solid var(--line)}
+  .assign-btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);font-size:12px;padding:4px 9px;border-radius:7px;cursor:pointer}
+  .assign-btn:hover{background:#fbfaf7}
+  .assign-btn .caret{font-size:9px;opacity:.6}
+  .assign-menu{position:absolute;top:calc(100% + 6px);right:0;left:auto;z-index:20;background:var(--card);border:1px solid var(--line-strong);border-radius:9px;box-shadow:0 6px 24px rgba(40,38,34,.14);padding:6px;min-width:150px}
+  .assign-menu.hidden{display:none}
+  .assign-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13px;padding:7px 9px;border-radius:6px;cursor:pointer;color:var(--ink)}
+  .assign-menu button:hover{background:#f6f4ef}
+  .assign-menu button.on{background:#eef1f5;font-weight:600}
+  .assign-menu button.none{color:var(--muted)}
+  .kbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .kbar-lbl{font-size:12.5px;color:var(--muted)}
+  .kgroup{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden}
+  .kgroup button{border:0;background:var(--card);color:var(--muted);font-size:12.5px;padding:5px 12px;cursor:pointer;border-right:1px solid var(--line)}
+  .kgroup button:last-child{border-right:0}
+  .kgroup button.on{background:var(--accent);color:#fff;font-weight:600}
 
   .del{border:0;background:transparent;color:var(--line-strong);cursor:pointer;font-size:17px;line-height:1;padding:2px 4px;flex:0 0 auto;margin-top:-2px;transition:color .12s}
   .task:hover .del{color:var(--muted)}
@@ -247,6 +264,8 @@ let dirty = false;       // cambios sin commitear todavía
 let curSha = null;       // sha actual de board.json (necesario para el commit)
 let lastServer = '';
 let view = /kanban/i.test(location.hash||'') ? 'kanban' : 'lista';   // 'lista' | 'kanban'
+let kgroup = 'status';   // agrupación del Kanban: 'status' | 'asignacion'
+const ASSIGNEES = ['Jorge','Valentín','Federico','Fernando','Lu'];
 
 const CAT_NAME = {dev:'Dev', arte:'Arte', animacion:'Animación'};
 function catLabel(k){ return CAT_NAME[k] || 'Categoría'; }
@@ -447,15 +466,26 @@ function kcard(t){
   const lvl=t.prio?`<span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span>`:'';
   const stages=(t.stages||[]).map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('');
   const nsubs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).length;
-  el.innerHTML=`<div class="ktext">${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div>`;
+  const asg=t.assignee?`<span class="chip assignee">${esc(t.assignee)}</span>`:'';
+  el.innerHTML=`<div class="ktext">${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${asg}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div>`;
   return el;
 }
 function renderKanban(){
   const app=document.getElementById('app'); app.innerHTML='';
-  const cols=[{key:'',name:'Sin status',cls:''},{key:'wip',name:'WIP',cls:'wip'},{key:'done',name:'Done',cls:'done'}];
+  const bar=document.createElement('div'); bar.className='kbar';
+  bar.innerHTML=`<span class="kbar-lbl">Agrupar por:</span>
+    <span class="kgroup">
+      <button data-kg="status" class="${kgroup==='status'?'on':''}">Status</button>
+      <button data-kg="asignacion" class="${kgroup==='asignacion'?'on':''}">Asignación</button>
+    </span>`;
+  app.appendChild(bar);
+  const field = kgroup==='asignacion' ? 'assignee' : 'status';
+  const cols = kgroup==='asignacion'
+    ? ASSIGNEES.map(a=>({key:a,name:a,cls:''})).concat([{key:'',name:'Sin asignar',cls:''}])
+    : [{key:'',name:'Sin status',cls:''},{key:'wip',name:'WIP',cls:'wip'},{key:'done',name:'Done',cls:'done'}];
   const board=document.createElement('div'); board.className='kanban';
   cols.forEach(c=>{
-    const items=state.tasks.filter(t=>(t.status||'')===c.key);
+    const items=state.tasks.filter(t=>(t[field]||'')===c.key);
     const col=document.createElement('div'); col.className='kcol';
     col.innerHTML=`<div class="kcol-head ${c.cls}"><span>${c.name}</span><span class="kcount">${items.length}</span></div>`;
     const list=document.createElement('div'); list.className='kcards';
@@ -518,6 +548,7 @@ function taskEl(t){
       <div class="controls">
         <span class="stage-ro">${stageChips || '<span class="muted">—</span>'}</span>
         ${t.prio && t.status ? `<span class="status"><span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span></span>` : ''}
+        ${t.prio && t.assignee ? `<span class="assign"><span class="chip assignee">${esc(t.assignee)}</span></span>` : ''}
       </div>`;
     return el;
   }
@@ -544,6 +575,15 @@ function taskEl(t){
           <button data-status="" class="none">— Sin status</button>
         </div>
       </span>` : '';
+  const _as=t.assignee||'';
+  const assignCtl = t.prio ? `
+      <span class="assign">
+        <button class="assign-btn" type="button">${_as?`<span class="chip assignee">${esc(_as)}</span>`:'<span class="caret">Asignar ▾</span>'}</button>
+        <div class="assign-menu hidden">
+          ${ASSIGNEES.map(a=>`<button data-assignee="${esc(a)}" class="${_as===a?'on':''}">${esc(a)}</button>`).join('')}
+          <button data-assignee="" class="none">— Sin asignar</button>
+        </div>
+      </span>` : '';
   el.innerHTML = `
     <input type="checkbox" class="check" ${t.prio?'checked':''} title="Marcar como prioridad">
     <button class="addsub" type="button" title="Agregar subtarea">+</button>
@@ -561,6 +601,7 @@ function taskEl(t){
         </div>
       </span>
       ${statusCtl}
+      ${assignCtl}
     </div>
     <button class="del" title="Eliminar nota">×</button>`;
   return el;
@@ -644,7 +685,7 @@ app.addEventListener('click', e=>{
   if(sBtn){
     const menu=sBtn.parentElement.querySelector('.stage-menu');
     const wasHidden=menu.classList.contains('hidden');
-    document.querySelectorAll('.stage-menu, .status-menu').forEach(m=>m.classList.add('hidden'));
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden'));
     if(wasHidden) menu.classList.remove('hidden');
     e.stopPropagation(); return;
   }
@@ -654,12 +695,23 @@ app.addEventListener('click', e=>{
   if(stBtn){
     const menu=stBtn.parentElement.querySelector('.status-menu');
     const wasHidden=menu.classList.contains('hidden');
-    document.querySelectorAll('.stage-menu, .status-menu').forEach(m=>m.classList.add('hidden'));
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden'));
     if(wasHidden) menu.classList.remove('hidden');
     e.stopPropagation(); return;
   }
   const stOpt=e.target.closest('.status-menu button[data-status]');
   if(stOpt && taskDiv){ getTask(taskDiv.dataset.id).status=stOpt.dataset.status; save(); render(); return; }
+
+  const asgBtn=e.target.closest('.assign-btn');
+  if(asgBtn){
+    const menu=asgBtn.parentElement.querySelector('.assign-menu');
+    const wasHidden=menu.classList.contains('hidden');
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden'));
+    if(wasHidden) menu.classList.remove('hidden');
+    e.stopPropagation(); return;
+  }
+  const asgOpt=e.target.closest('.assign-menu button[data-assignee]');
+  if(asgOpt && taskDiv){ getTask(taskDiv.dataset.id).assignee=asgOpt.dataset.assignee; save(); render(); return; }
 });
 
 app.addEventListener('blur', e=>{
@@ -679,7 +731,7 @@ app.addEventListener('blur', e=>{
 app.addEventListener('keydown', e=>{
   if((e.target.classList.contains('text')||e.target.classList.contains('sub-text')) && e.key==='Enter'){ e.preventDefault(); e.target.blur(); }
 });
-document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .status-menu').forEach(m=>m.classList.add('hidden')); });
+document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden')); });
 
 // toolbar
 document.getElementById('resetBtn').addEventListener('click', ()=>{
@@ -738,6 +790,12 @@ document.getElementById('viewBtn').addEventListener('click', ()=>{
   if(view==='kanban'){ try{ location.hash='kanban'; }catch(e){} }
   else { try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} }
   updateChrome(); render();
+});
+
+// Kanban: cambiar agrupación (Status / Asignación) — también para quien solo ve
+app.addEventListener('click', e=>{
+  const kg=e.target.closest('.kgroup button[data-kg]');
+  if(kg){ kgroup=kg.dataset.kg; renderKanban(); }
 });
 
 boot();
