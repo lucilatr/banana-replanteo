@@ -39,12 +39,7 @@
       "level": "med",
       "stages": [],
       "order": 0,
-      "subtasks": [
-        {
-          "id": "s75",
-          "text": ""
-        }
-      ]
+      "subtasks": []
     },
     {
       "id": "t5",
