@@ -109,9 +109,9 @@
   .addsub:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
   .subs{margin-top:8px;display:flex;flex-direction:column;gap:4px}
   .subs:empty{display:none}
-  .sub{display:flex;align-items:flex-start;gap:8px}
+  .sub{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
   .sub-bullet{flex:0 0 auto;width:5px;height:5px;border-radius:50%;background:var(--line-strong);margin-top:8px}
-  .sub-text{flex:1 1 auto;font-size:13.5px;color:#4a4842;outline:none;padding:1px 2px;border-radius:4px;line-height:1.4;word-wrap:break-word;min-width:0}
+  .sub-text{flex:1 1 140px;font-size:13.5px;color:#4a4842;outline:none;padding:1px 2px;border-radius:4px;line-height:1.4;word-wrap:break-word;min-width:120px}
   .sub-text[contenteditable="true"]:focus{background:#fbf7ea;box-shadow:inset 0 0 0 1px var(--med)}
   .sub-del{border:0;background:transparent;color:var(--line-strong);cursor:pointer;font-size:14px;line-height:1;padding:0 3px;flex:0 0 auto;margin-top:2px}
   .sub:hover .sub-del{color:var(--muted)}
