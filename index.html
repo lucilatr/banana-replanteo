@@ -548,7 +548,7 @@ function ksubcard(t,s){
   el.draggable=editor; el.dataset.card='sub'; el.dataset.id=t.id; el.dataset.sid=s.id;
   const asg=s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:'';
   const stc=s.status?`<span class="chip ${s.status}">${({wip:'WIP',done:'Done'})[s.status]}</span>`:'';
-  el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${esc(s.text)}</div><div class="kmeta">${stc}${asg}</div>`;
+  el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${esc(s.text)}</div><div class="kmeta">${asg}${stc}</div>`;
   return el;
 }
 
@@ -601,7 +601,7 @@ function taskEl(t){
   // ----- read-only -----
   if(!editor){
     const lvl = t.prio ? `<div class="meta"><span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span></div>` : '';
-    const subsRo=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).map(s=>`<div class="sub"><span class="sub-bullet"></span><div class="sub-text">${esc(s.text)}</div>${s.status?`<span class="chip ${s.status}">${({wip:'WIP',done:'Done'})[s.status]}</span>`:''}${s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:''}</div>`).join('');
+    const subsRo=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).map(s=>`<div class="sub"><span class="sub-bullet"></span><div class="sub-text">${esc(s.text)}</div>${s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:''}${s.status?`<span class="chip ${s.status}">${({wip:'WIP',done:'Done'})[s.status]}</span>`:''}</div>`).join('');
     el.innerHTML = `
       <span class="check-ro ${t.prio?'on':''}"></span>
       <div class="body">
@@ -629,7 +629,7 @@ function taskEl(t){
       </span>
     </div>` : '';
 
-  const subsEd=(t.subtasks||[]).map(s=>{const sa=s.assignee||'', ss=s.status||'', stN={wip:'WIP',done:'Done'};return `<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><span class="sstatus"><button class="sstatus-btn" type="button">${ss?`<span class="chip ${ss}">${stN[ss]}</span>`:'<span class="caret">Status ▾</span>'}</button><div class="sstatus-menu hidden"><button data-sstatus="wip" class="${ss==='wip'?'on':''}">WIP</button><button data-sstatus="done" class="${ss==='done'?'on':''}">Done</button><button data-sstatus="" class="none">— Sin status</button></div></span><span class="sassign"><button class="sassign-btn" type="button">${sa?`<span class="chip assignee">${esc(sa)}</span>`:'<span class="caret">Asignar ▾</span>'}</button><div class="sassign-menu hidden">${ASSIGNEES.map(a=>`<button data-sassignee="${esc(a)}" class="${sa===a?'on':''}">${esc(a)}</button>`).join('')}<button data-sassignee="" class="none">— Sin asignar</button></div></span><button class="sub-del" title="Eliminar subtarea">×</button></div>`;}).join('');
+  const subsEd=(t.subtasks||[]).map(s=>{const sa=s.assignee||'', ss=s.status||'', stN={wip:'WIP',done:'Done'};return `<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><span class="sassign"><button class="sassign-btn" type="button">${sa?`<span class="chip assignee">${esc(sa)}</span>`:'<span class="caret">Asignar ▾</span>'}</button><div class="sassign-menu hidden">${ASSIGNEES.map(a=>`<button data-sassignee="${esc(a)}" class="${sa===a?'on':''}">${esc(a)}</button>`).join('')}<button data-sassignee="" class="none">— Sin asignar</button></div></span><span class="sstatus"><button class="sstatus-btn" type="button">${ss?`<span class="chip ${ss}">${stN[ss]}</span>`:'<span class="caret">Status ▾</span>'}</button><div class="sstatus-menu hidden"><button data-sstatus="wip" class="${ss==='wip'?'on':''}">WIP</button><button data-sstatus="done" class="${ss==='done'?'on':''}">Done</button><button data-sstatus="" class="none">— Sin status</button></div></span><button class="sub-del" title="Eliminar subtarea">×</button></div>`;}).join('');
   const _st=t.status||'', _stN={wip:'WIP',done:'Done'};
   const _hasSubs=(t.subtasks||[]).some(s=>s.text&&s.text.trim());
   const statusCtl = _hasSubs
