@@ -115,10 +115,10 @@
       "id": "t15",
       "category": "dev",
       "text": "Tutorial no restrictivo: aprendizaje natural interactuando con objetos, guiado por indicadores contextuales.",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0
+      "order": 92
     },
     {
       "id": "t17",
@@ -477,5 +477,5 @@
       "subtasks": []
     }
   ],
-  "seq": 92
+  "seq": 93
 }
