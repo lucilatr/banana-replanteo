@@ -275,7 +275,12 @@
       "level": "high",
       "stages": [],
       "order": 10,
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": "s74",
+          "text": ""
+        }
+      ]
     },
     {
       "id": "t40",
@@ -397,5 +402,5 @@
       "order": 0
     }
   ],
-  "seq": 74
+  "seq": 75
 }
