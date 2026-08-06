@@ -275,12 +275,7 @@
       "level": "high",
       "stages": [],
       "order": 10,
-      "subtasks": [
-        {
-          "id": "s73",
-          "text": "test"
-        }
-      ]
+      "subtasks": []
     },
     {
       "id": "t40",
