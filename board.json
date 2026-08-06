@@ -276,7 +276,10 @@
       "text": "Viento al salir: que se sienta la velocidad y el peligro de salir; estar afuera sube el nivel de peligro.",
       "prio": true,
       "level": "high",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 10,
       "subtasks": []
     },
