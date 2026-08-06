@@ -299,7 +299,7 @@
     {
       "id": "t41",
       "category": "dev",
-      "text": "Mapa vivo que responde al vuelo; zonas peligrosas con ícono (nuclear que se expande) para esquivar.",
+      "text": "Mapa vivo que responde al vuelo-  zonas peligrosas con ícono (nuclear que se expande) para esquivar.",
       "prio": true,
       "level": "med",
       "stages": [],
