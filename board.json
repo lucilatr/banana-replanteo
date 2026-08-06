@@ -415,7 +415,9 @@
       "text": "Tercer estadio de pasajero: amenza extrema video",
       "prio": false,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "trailer"
+      ],
       "order": 0,
       "subtasks": []
     }
