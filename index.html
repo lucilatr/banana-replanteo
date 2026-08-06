@@ -70,6 +70,11 @@
   .kmeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
   .ksubs{font-size:11px;color:var(--muted)}
   .kempty{color:var(--line-strong);font-size:12px;font-style:italic;padding:8px 6px}
+  .kcards{min-height:24px}
+  .kcard[draggable="true"]{cursor:grab}
+  .kcard.dragging{opacity:.4}
+  .kcol.dropactive{box-shadow:inset 0 0 0 2px var(--accent)}
+  .kanban.byassign:not(.dragging) .kcol.empty{display:none}
 
   section.group{margin-top:30px}
   .group-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
@@ -479,6 +484,7 @@ function render(){ if(view==='kanban') renderKanban(); else renderList(); }
 function kcard(t){
   const el=document.createElement('div');
   el.className='kcard'+(t.prio?' lvl-'+t.level:'');
+  el.draggable=editor; el.dataset.card='task'; el.dataset.id=t.id;
   const lvl=t.prio?`<span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span>`:'';
   const stages=(t.stages||[]).map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('');
   const nsubs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).length;
@@ -495,30 +501,32 @@ function renderKanban(){
       <button data-kg="asignacion" class="${kgroup==='asignacion'?'on':''}">Asignación</button>
     </span>`;
   app.appendChild(bar);
-  const board=document.createElement('div'); board.className='kanban';
+  const board=document.createElement('div'); board.className='kanban'+(kgroup==='asignacion'?' byassign':'');
   if(kgroup==='asignacion'){
-    const cols=ASSIGNEES.map(a=>({key:a,name:a,cls:''})).concat([{key:'',name:'Sin asignar',cls:''}]);
-    cols.forEach(c=>{
+    const asgCards=(key)=>{
       const cards=[];
       state.tasks.forEach(t=>{
         const subs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim());
-        if(subs.length){ subs.forEach(s=>{ if((s.assignee||'')===c.key) cards.push(ksubcard(t,s)); }); }
-        else if((t.assignee||'')===c.key){ cards.push(kcard(t)); }
+        if(subs.length){ subs.forEach(s=>{ if((s.assignee||'')===key) cards.push(ksubcard(t,s)); }); }
+        else if((t.assignee||'')===key){ cards.push(kcard(t)); }
       });
-      board.appendChild(kcolEl(c, cards));
-    });
+      return cards;
+    };
+    ASSIGNEES.forEach(a=> board.appendChild(kcolEl({key:a,name:a,cls:''}, asgCards(a), 'assignee')));
+    board.appendChild(kcolEl({key:'',name:'Sin asignar',cls:''}, asgCards(''), 'assignee'));
   } else {
     const cols=[{key:'',name:'Sin status',cls:''},{key:'wip',name:'WIP',cls:'wip'},{key:'done',name:'Done',cls:'done'}];
     cols.forEach(c=>{
       const cards=state.tasks.filter(t=>(t.status||'')===c.key).map(t=>kcard(t));
-      board.appendChild(kcolEl(c, cards));
+      board.appendChild(kcolEl(c, cards, 'status'));
     });
   }
   app.appendChild(board);
   const st=document.getElementById('stat'); if(st) st.textContent=`${state.tasks.length} notas`;
 }
-function kcolEl(c, cards){
-  const col=document.createElement('div'); col.className='kcol';
+function kcolEl(c, cards, field){
+  const col=document.createElement('div'); col.className='kcol'+(cards.length===0?' empty':'');
+  col.dataset.key=c.key; col.dataset.field=field||'';
   col.innerHTML=`<div class="kcol-head ${c.cls}"><span>${c.name}</span><span class="kcount">${cards.length}</span></div>`;
   const list=document.createElement('div'); list.className='kcards';
   if(cards.length===0) list.innerHTML='<div class="kempty">—</div>';
@@ -527,6 +535,7 @@ function kcolEl(c, cards){
 }
 function ksubcard(t,s){
   const el=document.createElement('div'); el.className='kcard';
+  el.draggable=editor; el.dataset.card='sub'; el.dataset.id=t.id; el.dataset.sid=s.id;
   const asg=s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:'';
   el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${esc(s.text)}</div><div class="kmeta">${asg}</div>`;
   return el;
@@ -537,8 +546,9 @@ function renderList(){
 
   const done = state.tasks.filter(t=>t.status==='done').sort((a,b)=> String(b.doneAt||'').localeCompare(String(a.doneAt||'')));
   const prio = state.tasks.filter(t=>t.prio && t.status!=='done')
-    .sort((a,b)=> (LEVEL_RANK[a.level]-LEVEL_RANK[b.level]) || (b.order-a.order));
-  const items = state.tasks.filter(t=>!t.prio && t.status!=='done');
+    .sort((a,b)=> (LEVEL_RANK[a.level]-LEVEL_RANK[b.level]) || ((a.order||0)-(b.order||0)));
+  const items = state.tasks.filter(t=>!t.prio && t.status!=='done')
+    .sort((a,b)=> (a.order||0)-(b.order||0));
 
   const pSec=document.createElement('section'); pSec.className='group prio';
   pSec.innerHTML=`<div class="group-head"><span class="group-title">★ Prioridades</span><span class="group-count">${prio.length}</span></div>`;
@@ -799,6 +809,60 @@ app.addEventListener('keydown', e=>{
   if((e.target.classList.contains('text')||e.target.classList.contains('sub-text')) && e.key==='Enter'){ e.preventDefault(); e.target.blur(); }
 });
 document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .status-menu, .assign-menu, .sassign-menu').forEach(m=>m.classList.add('hidden')); });
+
+// ---------- Kanban: drag & drop ----------
+let DRAG=null;
+app.addEventListener('dragstart', e=>{
+  if(!editor) return;
+  const c=e.target.closest('.kcard'); if(!c) return;
+  DRAG={card:c.dataset.card, id:c.dataset.id, sid:c.dataset.sid||null};
+  try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', c.dataset.id); }catch(_){}
+  c.classList.add('dragging');
+  const b=c.closest('.kanban'); if(b) b.classList.add('dragging');
+});
+app.addEventListener('dragend', ()=>{
+  document.querySelectorAll('.kcard.dragging').forEach(x=>x.classList.remove('dragging'));
+  document.querySelectorAll('.kanban.dragging').forEach(x=>x.classList.remove('dragging'));
+  document.querySelectorAll('.kcol.dropactive').forEach(x=>x.classList.remove('dropactive'));
+  DRAG=null;
+});
+app.addEventListener('dragover', e=>{
+  if(!editor||!DRAG) return;
+  const col=e.target.closest('.kcol'); if(!col) return;
+  e.preventDefault();
+  document.querySelectorAll('.kcol.dropactive').forEach(x=>{ if(x!==col) x.classList.remove('dropactive'); });
+  col.classList.add('dropactive');
+});
+app.addEventListener('drop', e=>{
+  if(!editor||!DRAG) return;
+  const col=e.target.closest('.kcol'); if(!col) return;
+  e.preventDefault();
+  kanbanDrop(col, e.clientY);
+});
+function kanbanDrop(col, y){
+  const field=col.dataset.field, key=col.dataset.key||'';
+  const t=getTask(DRAG.id); if(!t){ DRAG=null; return; }
+  const cards=[...col.querySelectorAll('.kcard')].filter(c=>!c.classList.contains('dragging'));
+  let beforeCard=null;
+  for(const c of cards){ const r=c.getBoundingClientRect(); if(y < r.top + r.height/2){ beforeCard=c; break; } }
+  const idx = beforeCard ? cards.indexOf(beforeCard) : cards.length;
+  const above = idx>0 ? getTask(cards[idx-1].dataset.id) : null;
+  const below = beforeCard ? getTask(beforeCard.dataset.id) : null;
+  if(field==='assignee'){
+    if(DRAG.card==='sub'){ const s=(t.subtasks||[]).find(x=>x.id===DRAG.sid); if(s) s.assignee=key; }
+    else { t.assignee=key; }
+  } else if(field==='status'){
+    if(key==='done' && t.status!=='done') t.doneAt=new Date().toISOString().slice(0,10);
+    if(key!=='done') t.doneAt=null;
+    t.status=key;
+  }
+  if(DRAG.card==='task'){
+    const oa=above?(above.order||0):null, ob=below?(below.order||0):null;
+    t.order = (oa!=null&&ob!=null) ? (oa+ob)/2 : (ob!=null ? ob-1 : (oa!=null ? oa+1 : 0));
+  }
+  DRAG=null;
+  save(); render();
+}
 
 // toolbar
 document.getElementById('resetBtn').addEventListener('click', ()=>{
