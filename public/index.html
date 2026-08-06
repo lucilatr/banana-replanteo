@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Replanteo · Lista de tareas</title>
+<style>
+  :root{
+    --paper:#f7f6f2;
+    --card:#ffffff;
+    --ink:#2c2b28;
+    --muted:#8d8a82;
+    --line:#e7e4dc;
+    --line-strong:#d9d5cb;
+    --accent:#4b5563;
+    --high:#c0563e;
+    --high-bg:#f9e9e4;
+    --med:#c99a3a;
+    --med-bg:#f8f0dc;
+    --low:#5e9078;
+    --low-bg:#e6f0ea;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(40,38,34,.05), 0 1px 8px rgba(40,38,34,.04);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:40px 22px 120px}
+
+  header.page{margin-bottom:28px}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+  h1{font-size:26px;font-weight:650;margin:0;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:6px}
+  .toolbar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
+  .btn{
+    border:1px solid var(--line-strong);background:var(--card);color:var(--ink);
+    padding:7px 12px;border-radius:8px;font-size:13px;cursor:pointer;
+    transition:background .12s,border-color .12s;
+  }
+  .btn:hover{background:#fbfaf7;border-color:#cbc7bc}
+  .btn.ghost{color:var(--muted)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:#3f4855}
+  .stat{font-size:12.5px;color:var(--muted);margin-left:auto}
+  .hidden{display:none!important}
+  .pin{background:#fbf7ea;border:1px solid var(--med-bg);border-left:3px solid var(--med);border-radius:10px;padding:12px 14px;margin-bottom:4px;font-size:14px;line-height:1.45;color:var(--ink)}
+
+  section.group{margin-top:30px}
+  .group-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+  .group-title{font-size:13px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .group-count{font-size:12px;color:var(--muted)}
+  .group.prio .group-title{color:var(--ink)}
+
+  .list{display:flex;flex-direction:column;gap:8px}
+
+  .task{
+    display:flex;align-items:flex-start;gap:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px 14px;box-shadow:var(--shadow);
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .task:hover{border-color:var(--line-strong)}
+  .task.is-prio{border-left:3px solid var(--line-strong)}
+  .task.lvl-high{border-left-color:var(--high)}
+  .task.lvl-med{border-left-color:var(--med)}
+  .task.lvl-low{border-left-color:var(--low)}
+
+  .check{
+    appearance:none;-webkit-appearance:none;
+    width:19px;height:19px;flex:0 0 auto;margin-top:1px;
+    border:1.5px solid var(--line-strong);border-radius:5px;background:var(--card);
+    cursor:pointer;position:relative;transition:background .12s,border-color .12s;
+  }
+  .check:hover{border-color:var(--accent)}
+  .check:checked{background:var(--accent);border-color:var(--accent)}
+  .check:checked::after{content:"";position:absolute;left:5.5px;top:2px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  /* read-only checkbox */
+  .check-ro{width:19px;height:19px;flex:0 0 auto;margin-top:1px;border:1.5px solid var(--line-strong);border-radius:5px;background:var(--card);position:relative;display:inline-block}
+  .check-ro.on{background:var(--accent);border-color:var(--accent)}
+  .check-ro.on::after{content:"";position:absolute;left:5.5px;top:2px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+  .body{flex:1 1 auto;min-width:0}
+  .text{outline:none;font-size:14.5px;line-height:1.45;padding:1px 2px;border-radius:4px;word-wrap:break-word}
+  .text[contenteditable="true"]:focus{background:#fbf7ea;box-shadow:inset 0 0 0 1px var(--med)}
+  .addsub{flex:0 0 auto;margin-top:0;width:22px;height:22px;border-radius:6px;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s,border-color .12s}
+  .addsub:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .subs{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+  .subs:empty{display:none}
+  .sub{display:flex;align-items:flex-start;gap:8px}
+  .sub-bullet{flex:0 0 auto;width:5px;height:5px;border-radius:50%;background:var(--line-strong);margin-top:8px}
+  .sub-text{flex:1 1 auto;font-size:13.5px;color:#4a4842;outline:none;padding:1px 2px;border-radius:4px;line-height:1.4;word-wrap:break-word;min-width:0}
+  .sub-text[contenteditable="true"]:focus{background:#fbf7ea;box-shadow:inset 0 0 0 1px var(--med)}
+  .sub-del{border:0;background:transparent;color:var(--line-strong);cursor:pointer;font-size:14px;line-height:1;padding:0 3px;flex:0 0 auto;margin-top:2px}
+  .sub:hover .sub-del{color:var(--muted)}
+  .sub-del:hover{color:var(--high)}
+
+  .meta{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .levels{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+  .levels button{border:0;background:var(--card);color:var(--muted);font-size:11.5px;padding:4px 9px;cursor:pointer;border-right:1px solid var(--line);transition:background .1s,color .1s;letter-spacing:.02em}
+  .levels button:last-child{border-right:0}
+  .levels button.on-high{background:var(--high-bg);color:var(--high);font-weight:600}
+  .levels button.on-med{background:var(--med-bg);color:#a87b1e;font-weight:600}
+  .levels button.on-low{background:var(--low-bg);color:var(--low);font-weight:600}
+  .lvl-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.02em}
+  .lvl-badge.b-high{background:var(--high-bg);color:var(--high)}
+  .lvl-badge.b-med{background:var(--med-bg);color:#a87b1e}
+  .lvl-badge.b-low{background:var(--low-bg);color:var(--low)}
+
+  .controls{flex:0 0 auto;display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-left:auto;padding-left:14px;border-left:1px solid var(--line);align-self:stretch}
+  .cat{position:relative}
+  .cat-btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);font-size:12px;padding:4px 9px;border-radius:7px;cursor:pointer}
+  .cat-btn:hover{background:#fbfaf7}
+  .cat-btn.set{color:var(--ink);border-color:#cbc7bc}
+  .cat-btn .caret{font-size:9px;opacity:.6}
+  .cat-badge{font-size:12px;color:var(--ink);background:#eef1f5;padding:3px 9px;border-radius:7px;white-space:nowrap}
+  .cat-menu{position:absolute;top:calc(100% + 6px);right:0;left:auto;z-index:20;background:var(--card);border:1px solid var(--line-strong);border-radius:9px;box-shadow:0 6px 24px rgba(40,38,34,.14);padding:6px;min-width:150px}
+  .cat-menu.hidden{display:none}
+  .cat-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13px;padding:7px 9px;border-radius:6px;cursor:pointer;color:var(--ink)}
+  .cat-menu button:hover{background:#f6f4ef}
+  .cat-menu button.on{background:#eef1f5;font-weight:600;color:var(--accent)}
+  .cat-menu button.none{color:var(--muted)}
+
+  .stage{position:relative}
+  .stage-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);font-size:12px;padding:4px 9px;border-radius:7px;cursor:pointer}
+  .stage-btn:hover{background:#fbfaf7}
+  .stage-btn .caret{font-size:9px;opacity:.6}
+  .chip{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.02em}
+  .chip.demo{background:#e4edf7;color:#2f6fb0}
+  .chip.trailer{background:#e5f2e9;color:#3d8a5f}
+  .stage-ro{display:inline-flex;gap:5px}
+  .stage-ro .muted{color:var(--line-strong);font-size:12px}
+  .stage-menu{position:absolute;top:calc(100% + 6px);right:0;left:auto;z-index:20;background:var(--card);border:1px solid var(--line-strong);border-radius:9px;box-shadow:0 6px 24px rgba(40,38,34,.14);padding:6px;min-width:160px}
+  .stage-menu.hidden{display:none}
+  .stage-menu label{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;font-size:13px;cursor:pointer}
+  .stage-menu label:hover{background:#f6f4ef}
+  .stage-menu input{width:15px;height:15px;cursor:pointer}
+  .stage-menu input[data-tag="demo"]{accent-color:#2f6fb0}
+  .stage-menu input[data-tag="trailer"]{accent-color:#3d8a5f}
+
+  .del{border:0;background:transparent;color:var(--line-strong);cursor:pointer;font-size:17px;line-height:1;padding:2px 4px;flex:0 0 auto;margin-top:-2px;transition:color .12s}
+  .task:hover .del{color:var(--muted)}
+  .del:hover{color:var(--high)}
+
+  .add-row{margin-top:9px}
+  .add-btn{border:1px dashed var(--line-strong);background:transparent;color:var(--muted);font-size:13px;padding:8px 12px;border-radius:9px;cursor:pointer;width:100%;text-align:left;transition:background .12s,color .12s}
+  .add-btn:hover{background:#fbfaf7;color:var(--ink)}
+
+  .empty{color:var(--muted);font-size:13px;font-style:italic;padding:6px 2px}
+  footer.note{margin-top:44px;color:var(--muted);font-size:12px;text-align:center;line-height:1.6}
+
+  /* login modal */
+  .modal{position:fixed;inset:0;background:rgba(40,38,34,.35);display:flex;align-items:center;justify-content:center;z-index:100}
+  .modal-card{background:var(--card);border-radius:14px;padding:24px;width:320px;box-shadow:0 20px 60px rgba(40,38,34,.25)}
+  .modal-card h3{margin:0 0 14px;font-size:17px}
+  .modal-card input{width:100%;padding:9px 11px;border:1px solid var(--line-strong);border-radius:8px;font-size:14px;margin-bottom:10px}
+  .modal-card input:focus{outline:none;border-color:var(--accent)}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .err{color:var(--high);font-size:12.5px;min-height:16px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <p class="kicker">Replanteo · 2 semanas</p>
+    <h1>Lista de tareas</h1>
+    <div class="sub" id="subtitle">Notas generales de la reunión.</div>
+    <div class="toolbar">
+      <button class="btn ghost hidden" id="resetBtn">Restaurar lista original</button>
+      <button class="btn ghost hidden" id="clearPrioBtn">Limpiar prioridades</button>
+      <button class="btn hidden" id="authBtn">Editar</button>
+      <button class="btn ghost" id="exportBtn">Exportar</button>
+      <button class="btn ghost hidden" id="importBtn">Importar</button>
+      <input type="file" id="importFile" accept="application/json" class="hidden">
+      <span id="sync" style="font-size:12.5px;font-weight:600;color:#8d8a82">○ Modo local</span>
+      <span class="stat" id="stat"></span>
+    </div>
+  </header>
+
+  <div class="pin">🎯 <strong>Condición de victoria:</strong> llegar a destino con la mayor cantidad de pasajeros vivos y en el menor tiempo.</div>
+
+  <div id="app"></div>
+
+  <footer class="note" id="foot"></footer>
+</div>
+
+<div id="loginModal" class="modal hidden">
+  <div class="modal-card">
+    <h3>Entrar para editar</h3>
+    <input id="loginPass" type="password" placeholder="Contraseña de edición" autocomplete="current-password">
+    <div class="err" id="loginErr"></div>
+    <div class="modal-actions">
+      <button class="btn" id="loginCancel">Cancelar</button>
+      <button class="btn primary" id="loginGo">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE_KEY = 'banana-replanteo-tareas-v2';
+
+// ===== Sincronización vía Cloudflare Worker + KV =====
+const API = '/api/board';
+const POLL_MS = 4000;                                   // refresco de lectura (near real-time)
+const SHARED = /^https?:/.test(location.protocol);      // http(s): sincroniza · file://: modo local
+const TOKEN_KEY = 'banana-edit-token';
+function getToken(){ try{ return localStorage.getItem(TOKEN_KEY)||''; }catch(e){ return ''; } }
+function setToken(t){ try{ if(t) localStorage.setItem(TOKEN_KEY,t); else localStorage.removeItem(TOKEN_KEY); }catch(e){} }
+let editor = SHARED ? !!getToken() : true;   // en modo local editás; en compartido, solo con contraseña
+let dirty = false;       // hay cambios locales sin subir todavía
+let lastServer = '';     // último JSON visto del server (para detectar cambios)
+
+const CAT_NAME = {dev:'Dev', arte:'Arte', animacion:'Animación'};
+function catLabel(k){ return CAT_NAME[k] || 'Categoría'; }
+
+const SEED = [
+  // ---- Jugabilidad (→ Dev) ----
+  ['jugabilidad','Pasajeros = prioridad central: todas las amenazas del avión apuntan a matar pasajeros; el objetivo es que no se mueran.'],
+  ['jugabilidad','Sistema de caos / locura: en zonas nucleares los pollos mutan, se vuelven violentos y se atacan entre sí.', true],
+  ['jugabilidad','Inyecciones de extracto de banana para estabilizar pasajeros y bajar su nivel de locura.', true],
+  ['jugabilidad','Tres estados de pasajero: normal → desesperado (mutación) → amenaza extrema.'],
+  ['jugabilidad','Hambre / comportamientos extremos: un pasajero se come al de al lado si no lo alimentás. Mantenerlos alimentados y calmos.', true],
+  ['jugabilidad','Congelamiento a gran altura (aprobada): los personajes se congelan como bloques de hielo. Que no confunda con otras mecánicas.'],
+  ['jugabilidad','Eventos que interrumpen el pilotaje (cortes de luz, congelamiento de alas) para forzar a dejar el puesto y resolver problemas.'],
+  ['jugabilidad','Métricas de fracaso / indicadores visibles: contador de tiempo, contador de plata y sistema de muerte de pasajeros.', true],
+  ['jugabilidad','Daño del avión: daño orgánico, succión de viento al abrir puertas, física ragdoll.'],
+  ['jugabilidad','Rescate de pasajeros antes de que exploten o muten.'],
+  ['jugabilidad','Mapa procedural con reactores nucleares en zonas específicas (dentro del entorno militar existente).'],
+  ['jugabilidad','Riesgo / recompensa: pasar por zonas nucleares o militares da coleccionables o dinero, con riesgo de perder pasajeros.'],
+  ['jugabilidad','Economía / rejugabilidad: juntar dinero para mejorar la aerolínea o comprar equipamiento (mejores jeringas).'],
+  ['jugabilidad','Heladera / inventario: comprar objetos (jeringas) durante el vuelo; el objeto entregado debe ser de fácil acceso.'],
+  ['jugabilidad','Tutorial no restrictivo: aprendizaje natural interactuando con objetos, guiado por indicadores contextuales.'],
+  ['jugabilidad','Alcance demo: pasajeros sentados comportándose de forma caótica; evitar programar el desplazamiento completo del avión.'],
+  ['jugabilidad','Idea futura: jugadores que se inyectan entre sí / mutación que también afecta al piloto.'],
+  ['jugabilidad','Idea futura: fusionar mecánicas (tornado gigante + zonas nucleares) para navegación más compleja.'],
+  ['jugabilidad','Idea futura: explosión de personaje que rompe el avión (complejo → etapa posterior).'],
+  ['jugabilidad','Idea futura: canibalismo como feature (comentario de la comunidad, a evaluar).'],
+
+  // ---- Arte ----
+  ['arte','Mejorar la expresividad de los pasajeros para generar conexión emocional (que den interés o rechazo). Rig facial estilo stop-motion, expresiones extremas (risa, enojo, pánico).', true],
+  ['arte','Personalización y variedad de pasajeros (cuerpos, ropa, edades, accesorios de cabeza / pelucas, props) + ajustes de textura para dar identidad a cada uno. Hoy son todos iguales.', true],
+  ['arte','Prueba de deformación de huesos (escalar huesos, exportar a Unity) para verificar las deformaciones de los mutantes.'],
+  ['arte','Ragdoll vs. mancha para los cuerpos tras una explosión: evaluar cuál optimiza el desarrollo.'],
+  ['arte','Central nuclear: concepto limpio + modelo base (mesh) para integrar al mapa.'],
+  ['arte','Zona de equipaje: rediseñarla como repisa funcional para poner maletas (hoy tiene partes despegadas y huecos).'],
+  ['arte','Ventanas del avión: hacerlas redondeadas y separar el material de vidrio del marco en Blender.'],
+  ['arte','Humos de colores para las zonas radioactivas, para alertar del peligro inminente.'],
+  ['arte','Explosiones de personajes + decals sobre el avión; buscar efectos de líquidos (sustancia verde) en el Asset Store de Unity.'],
+  ['arte','Revisar el método usado para las nubes.'],
+  ['arte','Estética stop motion vía normales y texturas, sin modelos de alta densidad poligonal.'],
+
+  // ---- UI (→ Dev) ----
+  ['ui','Estilo minimalista y sutil (consenso del equipo).'],
+  ['ui','Diseñar cada pantalla / conjunto por separado a mano (se descartó usar IA para las interfaces).'],
+  ['ui','Trabajar con conceptos base para una implementación inicial, reemplazables más adelante.'],
+  ['ui','UI clean / HUD: tiempo, contador de pasajeros (vivos y restantes) y contador monetario. Look pro y simple.', true],
+  ['ui','Indicadores contextuales para el tutorial no restrictivo.'],
+
+  // ---- De la lista de ideas (BROTACIONES) — nuevas ----
+  ['jugabilidad','Comida exagerada / asquerosa; los pollos comen mucho.', true],
+  ['jugabilidad','Viento al salir: que se sienta la velocidad y el peligro de salir; estar afuera sube el nivel de peligro.', true],
+  ['jugabilidad','Caos ambiental / magnético del avión en la zona radioactiva.', true],
+  ['jugabilidad','Mapa vivo que responde al vuelo; zonas peligrosas con ícono (nuclear que se expande) para esquivar.', true],
+  ['jugabilidad','Más creepy y hardcore: picos de terror al cruzar las zonas nucleares.', true],
+  ['arte','Mejorar las texturas de los personajes (hoy están feas / crotas).', true],
+  ['','Trailer: video editado de gameplay mostrando todo el juego.', true],
+  ['','Posicionamiento: la versión hardcore que deja a Dear Passengers como el juego genérico.', true],
+  ['jugabilidad','UI que muestre progreso; que se entienda qué hacer (si no hago nada, ¿qué pasa?).'],
+  ['jugabilidad','Más acciones y vínculo con los pasajeros (hoy solo el café hace que los ignores).'],
+  ['jugabilidad','Si te drogás, flotás.'],
+  ['jugabilidad','Criatura gigante: un pasajero se transforma en un bicho enorme dentro del avión que te quiere matar.'],
+  ['arte','Luces dinámicas animadas en emergencias / momentos de terror.'],
+  ['','Lore: es un mundo de pollos, no hay humanos abajo; el lore nuclear (mutación / reemplazo) lo justifica.'],
+  ['','Lore / IP: por sobre-inyectar a los pollos, tomaron nuestro lugar y nos reemplazaron (profundidad tipo FNAF).'],
+];
+
+const LEVEL_RANK = {high:0, med:1, low:2};
+const SEED_CAT = {jugabilidad:'dev', ui:'dev', arte:'arte'};
+
+let state = seed();
+
+function seed(){
+  let seq=1, po=1;
+  const tasks = SEED.map(([cat, text, prio]) => ({
+    id:'t'+(seq++), category:SEED_CAT[cat]||'', text,
+    prio: !!prio, level:'med', stages:[], order: prio ? po++ : 0, subtasks:[],
+  }));
+  return {tasks, seq};
+}
+function load(){
+  try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const s=JSON.parse(raw); if(s&&s.tasks) return s; } }catch(e){}
+  return seed();
+}
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  if(SHARED && editor) dirty = true;
+  scheduleRemote();
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ---------- sincronización (Cloudflare Worker + KV) ----------
+let pushTimer=null;
+function scheduleRemote(){ if(!SHARED||!editor) return; clearTimeout(pushTimer); pushTimer=setTimeout(putBoard,500); }
+async function fetchBoard(){
+  const r = await fetch(API, {cache:'no-store'});
+  if(!r.ok) throw new Error('fetch '+r.status);
+  return await r.text();
+}
+async function putBoard(){
+  if(!SHARED||!editor) return;
+  const body = JSON.stringify(state);
+  try{
+    const r = await fetch(API, {method:'PUT', headers:{'Content-Type':'application/json','X-Edit-Token':getToken()}, body});
+    if(r.status===401){ setToken(''); editor=false; dirty=false; setSync('err'); updateChrome(); render(); alert('Contraseña de edición incorrecta o vencida. Volvé a entrar con "Editar".'); return; }
+    if(!r.ok) throw new Error('put '+r.status);
+    dirty=false; lastServer=body; setSync('ok');
+  }catch(e){ setSync('err'); }
+}
+async function poll(){
+  if(dirty) return;                       // no piso cambios locales sin subir
+  try{
+    const txt = await fetchBoard();
+    setSync('ok');
+    if(txt && txt!=='null' && txt!==lastServer){
+      lastServer = txt;
+      const incoming = JSON.parse(txt);
+      if(incoming && incoming.tasks && !isEditingText() && JSON.stringify(state)!==txt){
+        state = incoming; pruneWinNote(); render();
+      }
+    }
+  }catch(e){ setSync('err'); }
+}
+function isEditingText(){ const a=document.activeElement; return !!(a&&a.classList&&(a.classList.contains('text')||a.classList.contains('sub-text'))); }
+async function boot(){
+  if(SHARED){
+    setSync('...');
+    try{
+      const txt = await fetchBoard();
+      if(txt && txt!=='null'){ const j=JSON.parse(txt); if(j&&j.tasks){ state=j; lastServer=txt; } }
+      else if(editor){ state=load(); await putBoard(); }   // board vacío: lo siembro si soy editora
+      else { state=load(); }
+      setSync('ok');
+    }catch(e){ state=load(); setSync('err'); }
+    setInterval(poll, POLL_MS);
+  } else {
+    state = load(); setSync('local');
+  }
+  pruneWinNote();
+  updateChrome();
+  render();
+}
+function pruneWinNote(){
+  const before=state.tasks.length;
+  state.tasks=state.tasks.filter(t=>!/^Llegar a destino con la mayor cantidad de pasajeros/i.test((t.text||'').trim()));
+  if(state.tasks.length!==before) save();
+}
+function setSync(s){
+  const el=document.getElementById('sync'); if(!el) return;
+  const map={ok:['● En vivo','#3d8a5f'],'...':['○ Conectando…','#8d8a82'],err:['● Sin conexión','#c0563e'],local:['○ Modo local','#8d8a82']};
+  const v=map[s]||map.local; el.textContent=v[0]; el.style.color=v[1];
+}
+
+function updateChrome(){
+  const show=(id,on)=>{ const el=document.getElementById(id); if(el) el.classList.toggle('hidden', !on); };
+  show('resetBtn', editor);
+  show('clearPrioBtn', editor);
+  show('importBtn', editor);
+  show('authBtn', SHARED);
+  const ab=document.getElementById('authBtn'); if(ab) ab.textContent = editor ? 'Salir de edición' : 'Editar (soy Lu)';
+  const sub=document.getElementById('subtitle');
+  if(sub) sub.innerHTML = editor
+    ? 'Notas generales de la reunión. Tildá <strong>Prioridad</strong> para subirla arriba y asignale <em>Alta / Media / Baja</em>. Con el <strong>+</strong> (a la izquierda) sumás subtareas. A la derecha elegís en qué va: <strong>Demo</strong> y/o <strong>Trailer</strong>.'
+    : 'Notas generales de la reunión — vista de solo lectura, se actualiza en vivo.';
+  const foot=document.getElementById('foot');
+  if(foot) foot.innerHTML = 'Notas de la reunión "Banana Airways · Visual Direction Review" — 6 ago 2026.' + (editor ? '<br/>Editá el texto haciendo clic en cualquier nota. Agregá notas con el botón al final.' : '');
+}
+
+function render(){
+  const app=document.getElementById('app'); app.innerHTML='';
+
+  const prio = state.tasks.filter(t=>t.prio)
+    .sort((a,b)=> (LEVEL_RANK[a.level]-LEVEL_RANK[b.level]) || (b.order-a.order));
+
+  const pSec=document.createElement('section'); pSec.className='group prio';
+  pSec.innerHTML=`<div class="group-head"><span class="group-title">★ Prioridades</span><span class="group-count">${prio.length}</span></div>`;
+  const pList=document.createElement('div'); pList.className='list';
+  if(prio.length===0){ pList.innerHTML=`<div class="empty">${editor?'Todavía no marcaste ninguna prioridad. Tildá el casillero de una nota para subirla acá.':'Sin prioridades marcadas por ahora.'}</div>`; }
+  else { prio.forEach(t=> pList.appendChild(taskEl(t))); }
+  pSec.appendChild(pList); app.appendChild(pSec);
+
+  const items = state.tasks.filter(t=>!t.prio);
+  const sec=document.createElement('section'); sec.className='group';
+  sec.innerHTML=`<div class="group-head"><span class="group-title">Notas</span><span class="group-count">${items.length}</span></div>`;
+  const list=document.createElement('div'); list.className='list';
+  items.forEach(t=> list.appendChild(taskEl(t)));
+  if(editor){
+    const addRow=document.createElement('div'); addRow.className='add-row';
+    addRow.innerHTML=`<button class="add-btn" data-add="1">+ Agregar nota</button>`;
+    list.appendChild(addRow);
+  }
+  sec.appendChild(list); app.appendChild(sec);
+
+  document.getElementById('stat').textContent = `${prio.length} prioridad${prio.length===1?'':'es'} · ${state.tasks.length} notas`;
+}
+
+function taskEl(t){
+  const el=document.createElement('div');
+  el.className='task'+(t.prio?' is-prio lvl-'+t.level:'');
+  el.dataset.id=t.id;
+
+  const stageChips = t.stages.length
+    ? t.stages.map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('')
+    : '';
+
+  // ----- read-only -----
+  if(!editor){
+    const lvl = t.prio ? `<div class="meta"><span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span></div>` : '';
+    const subsRo=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).map(s=>`<div class="sub"><span class="sub-bullet"></span><div class="sub-text">${esc(s.text)}</div></div>`).join('');
+    el.innerHTML = `
+      <span class="check-ro ${t.prio?'on':''}"></span>
+      <div class="body">
+        <div class="text">${esc(t.text)}</div>
+        ${lvl}
+        <div class="subs">${subsRo}</div>
+      </div>
+      <div class="controls">
+        <span class="stage-ro">${stageChips || '<span class="muted">—</span>'}</span>
+      </div>`;
+    return el;
+  }
+
+  // ----- editor -----
+  const stagesHtml = stageChips || '<span class="caret">Seleccionar ▾</span>';
+  const levelHtml = t.prio ? `
+    <div class="meta">
+      <span class="levels" data-id="${t.id}">
+        <button data-lvl="high" class="${t.level==='high'?'on-high':''}">Alta</button>
+        <button data-lvl="med"  class="${t.level==='med' ?'on-med' :''}">Media</button>
+        <button data-lvl="low"  class="${t.level==='low' ?'on-low' :''}">Baja</button>
+      </span>
+    </div>` : '';
+
+  const subsEd=(t.subtasks||[]).map(s=>`<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><button class="sub-del" title="Eliminar subtarea">×</button></div>`).join('');
+  el.innerHTML = `
+    <input type="checkbox" class="check" ${t.prio?'checked':''} title="Marcar como prioridad">
+    <button class="addsub" type="button" title="Agregar subtarea">+</button>
+    <div class="body">
+      <div class="text" contenteditable="true" spellcheck="false">${esc(t.text)}</div>
+      ${levelHtml}
+      <div class="subs">${subsEd}</div>
+    </div>
+    <div class="controls">
+      <span class="stage">
+        <button class="stage-btn" type="button">${stagesHtml}</button>
+        <div class="stage-menu hidden">
+          <label><input type="checkbox" data-tag="demo" ${t.stages.includes('demo')?'checked':''}> Demo</label>
+          <label><input type="checkbox" data-tag="trailer" ${t.stages.includes('trailer')?'checked':''}> Trailer</label>
+        </div>
+      </span>
+    </div>
+    <button class="del" title="Eliminar nota">×</button>`;
+  return el;
+}
+
+function getTask(id){ return state.tasks.find(t=>t.id===id); }
+
+// ---------- eventos ----------
+const app=document.getElementById('app');
+
+app.addEventListener('change', e=>{
+  if(!editor) return;
+  const taskDiv=e.target.closest('.task');
+  if(e.target.classList.contains('check') && taskDiv){
+    const t=getTask(taskDiv.dataset.id); t.prio=e.target.checked;
+    if(t.prio){ t.order=state.seq++; }
+    save(); render(); return;
+  }
+  if(e.target.matches('input[data-tag]') && taskDiv){
+    const t=getTask(taskDiv.dataset.id); const tag=e.target.dataset.tag;
+    if(e.target.checked){ if(!t.stages.includes(tag)) t.stages.push(tag); }
+    else { t.stages=t.stages.filter(s=>s!==tag); }
+    t.stages.sort((a,b)=> a==='demo'?-1:1);
+    const btn=taskDiv.querySelector('.stage-btn');
+    btn.innerHTML = t.stages.length ? t.stages.map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('') : '<span class="caret">Seleccionar ▾</span>';
+    save(); return;
+  }
+});
+
+app.addEventListener('click', e=>{
+  if(!editor) return;
+  const taskDiv=e.target.closest('.task');
+
+  const addBtn=e.target.closest('[data-add]');
+  if(addBtn){
+    const t={id:'t'+(state.seq++), category:'', text:'Nueva nota', prio:false, level:'med', stages:[], order:0, subtasks:[]};
+    state.tasks.push(t); save(); render();
+    const node=document.querySelector('.task[data-id="'+t.id+'"] .text');
+    if(node){ const r=document.createRange(); r.selectNodeContents(node); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); node.focus(); }
+    return;
+  }
+  const asBtn=e.target.closest('.addsub');
+  if(asBtn && taskDiv){
+    const t=getTask(taskDiv.dataset.id);
+    t.subtasks=t.subtasks||[];
+    const sid='s'+(state.seq++);
+    t.subtasks.push({id:sid, text:''});
+    save(); render();
+    const node=document.querySelector('.task[data-id="'+t.id+'"] .sub[data-sid="'+sid+'"] .sub-text');
+    if(node) node.focus();
+    return;
+  }
+  const sDel=e.target.closest('.sub-del');
+  if(sDel && taskDiv){
+    const t=getTask(taskDiv.dataset.id);
+    const sid=sDel.closest('.sub').dataset.sid;
+    t.subtasks=(t.subtasks||[]).filter(s=>s.id!==sid);
+    save(); render();
+    return;
+  }
+  if(e.target.classList.contains('del') && taskDiv){
+    const t=getTask(taskDiv.dataset.id);
+    if(confirm('¿Eliminar esta nota?\n\n“'+t.text.slice(0,80)+'”')){ state.tasks=state.tasks.filter(x=>x.id!==t.id); save(); render(); }
+    return;
+  }
+  const lvlBtn=e.target.closest('.levels button');
+  if(lvlBtn && taskDiv){ getTask(taskDiv.dataset.id).level=lvlBtn.dataset.lvl; save(); render(); return; }
+
+  const cBtn=e.target.closest('.cat-btn');
+  if(cBtn){
+    const menu=cBtn.parentElement.querySelector('.cat-menu');
+    const wasHidden=menu.classList.contains('hidden');
+    document.querySelectorAll('.stage-menu, .cat-menu').forEach(m=>m.classList.add('hidden'));
+    if(wasHidden) menu.classList.remove('hidden');
+    e.stopPropagation(); return;
+  }
+  const cOpt=e.target.closest('.cat-menu button[data-cat]');
+  if(cOpt && taskDiv){ getTask(taskDiv.dataset.id).category=cOpt.dataset.cat; save(); render(); return; }
+
+  const sBtn=e.target.closest('.stage-btn');
+  if(sBtn){
+    const menu=sBtn.parentElement.querySelector('.stage-menu');
+    const wasHidden=menu.classList.contains('hidden');
+    document.querySelectorAll('.stage-menu, .cat-menu').forEach(m=>m.classList.add('hidden'));
+    if(wasHidden) menu.classList.remove('hidden');
+    e.stopPropagation(); return;
+  }
+  if(e.target.closest('.stage-menu')){ e.stopPropagation(); return; }
+});
+
+app.addEventListener('blur', e=>{
+  if(!editor) return;
+  if(e.target.classList.contains('text')){
+    const t=getTask(e.target.closest('.task').dataset.id);
+    const val=e.target.textContent.trim(); t.text=val||t.text; e.target.textContent=t.text; save();
+  }
+  else if(e.target.classList.contains('sub-text')){
+    const taskDiv=e.target.closest('.task'); const sid=e.target.closest('.sub').dataset.sid;
+    const t=getTask(taskDiv.dataset.id); const s=(t.subtasks||[]).find(x=>x.id===sid); if(!s) return;
+    const val=e.target.textContent.trim();
+    if(!val){ t.subtasks=t.subtasks.filter(x=>x.id!==sid); save(); render(); }
+    else { s.text=val; e.target.textContent=val; save(); }
+  }
+}, true);
+app.addEventListener('keydown', e=>{
+  if((e.target.classList.contains('text')||e.target.classList.contains('sub-text')) && e.key==='Enter'){ e.preventDefault(); e.target.blur(); }
+});
+document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .cat-menu').forEach(m=>m.classList.add('hidden')); });
+
+// toolbar
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!editor) return;
+  if(confirm('Esto restaura la lista original y borra los cambios (prioridades, etapas, ediciones). ¿Seguir?')){ state=seed(); save(); render(); }
+});
+document.getElementById('clearPrioBtn').addEventListener('click', ()=>{
+  if(!editor) return;
+  if(confirm('¿Sacar todas las notas de Prioridades? (vuelven a la lista)')){ state.tasks.forEach(t=>t.prio=false); save(); render(); }
+});
+
+// login por contraseña (la valida el Worker)
+const modal=document.getElementById('loginModal');
+document.getElementById('authBtn').addEventListener('click', ()=>{
+  if(!SHARED) return;
+  if(editor){ setToken(''); editor=false; dirty=false; updateChrome(); render(); }
+  else { document.getElementById('loginErr').textContent=''; modal.classList.remove('hidden'); document.getElementById('loginPass').focus(); }
+});
+document.getElementById('loginCancel').addEventListener('click', ()=> modal.classList.add('hidden'));
+document.getElementById('loginGo').addEventListener('click', async ()=>{
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  if(!pass){ err.textContent='Poné la contraseña.'; return; }
+  err.textContent='Verificando…';
+  try{
+    const body=JSON.stringify(state);
+    const r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json','X-Edit-Token':pass},body});
+    if(r.status===401){ err.textContent='Contraseña incorrecta.'; return; }
+    if(!r.ok){ err.textContent='Error de conexión, probá de nuevo.'; return; }
+    setToken(pass); editor=true; dirty=false; lastServer=body;
+    err.textContent=''; modal.classList.add('hidden'); document.getElementById('loginPass').value='';
+    updateChrome(); render();
+  }catch(e){ err.textContent='Error de conexión.'; }
+});
+document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('loginGo').click(); });
+
+// exportar / importar (para pasar tu lista curada a la nube)
+function exportJson(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='banana-replanteo.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importJson(file){
+  const rd=new FileReader();
+  rd.onload=()=>{ try{
+    const j=JSON.parse(rd.result); if(!j||!j.tasks) throw 0;
+    state=j; if(typeof state.seq!=='number') state.seq=state.tasks.length+1;
+    pruneWinNote(); save(); render();
+    alert('Lista importada ✓'+(SHARED&&editor?' y subida a la nube.':''));
+  }catch(e){ alert('No pude leer ese archivo (¿es el JSON exportado con "Exportar"?).'); } };
+  rd.readAsText(file);
+}
+document.getElementById('exportBtn').addEventListener('click', exportJson);
+document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', e=>{ if(e.target.files[0]) importJson(e.target.files[0]); e.target.value=''; });
+
+boot();
+</script>
+</body>
+</html>
