@@ -360,16 +360,17 @@
       "id": "t47",
       "category": "dev",
       "text": "Más acciones y vínculo con los pasajeros (hoy solo el café).",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0,
+      "order": 100,
       "subtasks": [
         {
           "id": "s53",
           "text": "Definir qué otra comida queremos sumar"
         }
-      ]
+      ],
+      "status": "wip"
     },
     {
       "id": "t48",
@@ -461,5 +462,5 @@
       "subtasks": []
     }
   ],
-  "seq": 100
+  "seq": 101
 }
