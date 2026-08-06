@@ -166,9 +166,7 @@
 <body>
 <div class="wrap">
   <header class="page">
-    <p class="kicker">Replanteo · 2 semanas</p>
     <h1>Lista de tareas</h1>
-    <div class="sub" id="subtitle">Notas generales de la reunión.</div>
     <div class="toolbar">
       <button class="btn ghost hidden" id="resetBtn">Restaurar lista original</button>
       <button class="btn ghost hidden" id="clearPrioBtn">Limpiar prioridades</button>
@@ -399,10 +397,6 @@ function updateChrome(){
   show('importBtn', editor);
   show('authBtn', editor);   // solo visible para vos (ya logueada); los demás no ven nada de editar
   const ab=document.getElementById('authBtn'); if(ab) ab.textContent = 'Cerrar edición';
-  const sub=document.getElementById('subtitle');
-  if(sub) sub.innerHTML = editor
-    ? 'Notas generales de la reunión. Tildá <strong>Prioridad</strong> para subirla arriba y asignale <em>Alta / Media / Baja</em>. Con el <strong>+</strong> (a la izquierda) sumás subtareas. A la derecha elegís en qué va: <strong>Demo</strong> y/o <strong>Trailer</strong>.'
-    : 'Notas generales de la reunión — vista de solo lectura (se actualiza al abrir/refrescar).';
   const foot=document.getElementById('foot');
   if(foot) foot.innerHTML = 'Notas de la reunión "Banana Airways · Visual Direction Review" — 6 ago 2026.' + (editor ? '<br/>Editá el texto haciendo clic en cualquier nota. Agregá notas con el botón al final.' : '');
 }
