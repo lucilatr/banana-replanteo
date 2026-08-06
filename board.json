@@ -214,10 +214,10 @@
       "id": "t29",
       "category": "arte",
       "text": "Explosiones de personajes + decals sobre el avión; buscar efectos de líquidos (sustancia verde) en el Asset Store de Unity.",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0
+      "order": 101
     },
     {
       "id": "t35",
@@ -462,5 +462,5 @@
       "subtasks": []
     }
   ],
-  "seq": 101
+  "seq": 102
 }
