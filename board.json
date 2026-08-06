@@ -38,7 +38,13 @@
       "prio": false,
       "level": "med",
       "stages": [],
-      "order": 0
+      "order": 0,
+      "subtasks": [
+        {
+          "id": "s75",
+          "text": ""
+        }
+      ]
     },
     {
       "id": "t5",
@@ -409,5 +415,5 @@
       "order": 0
     }
   ],
-  "seq": 75
+  "seq": 76
 }
