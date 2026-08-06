@@ -182,7 +182,7 @@
       "level": "high",
       "stages": [],
       "order": 54,
-      "assignee": "Fernando"
+      "assignee": "FER"
     },
     {
       "id": "t24",
@@ -330,17 +330,17 @@
         {
           "id": "s71",
           "text": "fx liquido radioactivo",
-          "assignee": "Agustín"
+          "assignee": "AGEZMA"
         },
         {
           "id": "s86",
           "text": "ZONA NUCLEAR: asset para sumar a mapa",
-          "assignee": "Fernando"
+          "assignee": "FER"
         },
         {
           "id": "s87",
           "text": "ZONA NUCLEAR: Alrededores de la zona todo en gris",
-          "assignee": "Pablo"
+          "assignee": "PABLO"
         },
         {
           "id": "s99",
