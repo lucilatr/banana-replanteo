@@ -295,25 +295,6 @@
       "order": 11
     },
     {
-      "id": "t41",
-      "category": "dev",
-      "text": "Mapa vivo que responde al vuelo-  zonas peligrosas con ícono (nuclear que se expande) para esquivar.",
-      "prio": true,
-      "level": "med",
-      "stages": [],
-      "order": 12,
-      "subtasks": [
-        {
-          "id": "s58",
-          "text": "armar sistema"
-        },
-        {
-          "id": "s59",
-          "text": "ui"
-        }
-      ]
-    },
-    {
       "id": "t42",
       "category": "",
       "text": "Al cruzar una zona nuclear los pollos se enloquecen, mutan, se vuelven violentos y se atacan entre sí.",
