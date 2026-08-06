@@ -34,11 +34,11 @@
     {
       "id": "t4",
       "category": "dev",
-      "text": "Tres estados de pasajero: normal → desesperado (mutación) → amenaza extrema.",
-      "prio": false,
+      "text": "Estados de pasajero: normal → desesperado (mutación)",
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0,
+      "order": 78,
       "subtasks": []
     },
     {
@@ -422,5 +422,5 @@
       "subtasks": []
     }
   ],
-  "seq": 78
+  "seq": 79
 }
