@@ -434,7 +434,17 @@
       "stages": [],
       "order": 0,
       "subtasks": []
+    },
+    {
+      "id": "t82",
+      "category": "",
+      "text": "Nueva nota",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": []
     }
   ],
-  "seq": 82
+  "seq": 83
 }
