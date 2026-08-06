@@ -333,6 +333,10 @@
         {
           "id": "s71",
           "text": "fx liquido radioactivo"
+        },
+        {
+          "id": "s86",
+          "text": ""
         }
       ]
     },
@@ -442,5 +446,5 @@
       "subtasks": []
     }
   ],
-  "seq": 86
+  "seq": 87
 }
