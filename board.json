@@ -357,15 +357,6 @@
       "order": 14
     },
     {
-      "id": "t46",
-      "category": "dev",
-      "text": "UI que muestre progreso; que se entienda qué hacer (si no hago nada, ¿qué pasa?).",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t47",
       "category": "dev",
       "text": "Más acciones y vínculo con los pasajeros (hoy solo el café).",
