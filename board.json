@@ -285,7 +285,8 @@
       "subtasks": [
         {
           "id": "s106",
-          "text": "Animacion caminata con resistencia por el viento"
+          "text": "Animacion caminata con resistencia por el viento",
+          "assignee": "MATEO"
         },
         {
           "id": "s107",
