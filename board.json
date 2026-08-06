@@ -275,7 +275,7 @@
       "category": "dev",
       "text": "Comida exagerada / asquerosa; los pollos comen mucho.",
       "prio": true,
-      "level": "med",
+      "level": "low",
       "stages": [],
       "order": 9
     },
