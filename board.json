@@ -271,6 +271,10 @@
           "id": "s109",
           "text": "Diseño radar",
           "assignee": "CARLINI"
+        },
+        {
+          "id": "s110",
+          "text": ""
         }
       ]
     },
@@ -494,5 +498,5 @@
       "subtasks": []
     }
   ],
-  "seq": 110
+  "seq": 111
 }
