@@ -102,7 +102,13 @@
       "level": "med",
       "stages": [],
       "order": 0,
-      "status": "wip"
+      "status": "wip",
+      "subtasks": [
+        {
+          "id": "s95",
+          "text": ""
+        }
+      ]
     },
     {
       "id": "t15",
@@ -490,5 +496,5 @@
       "subtasks": []
     }
   ],
-  "seq": 95
+  "seq": 96
 }
