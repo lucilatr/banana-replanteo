@@ -69,15 +69,6 @@
       "order": 0
     },
     {
-      "id": "t10",
-      "category": "dev",
-      "text": "Rescate de pasajeros antes de que exploten o muten.",
-      "prio": false,
-      "level": "med",
-      "stages": [],
-      "order": 0
-    },
-    {
       "id": "t11",
       "category": "dev",
       "text": "Mapa procedural con reactores nucleares en zonas específicas",
