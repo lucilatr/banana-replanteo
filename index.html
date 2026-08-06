@@ -172,7 +172,7 @@
     <div class="toolbar">
       <button class="btn ghost hidden" id="resetBtn">Restaurar lista original</button>
       <button class="btn ghost hidden" id="clearPrioBtn">Limpiar prioridades</button>
-      <button class="btn hidden" id="authBtn">Editar</button>
+      <button class="btn ghost hidden" id="authBtn">Cerrar edición</button>
       <button class="btn ghost" id="exportBtn">Exportar</button>
       <button class="btn ghost hidden" id="importBtn">Importar</button>
       <input type="file" id="importFile" accept="application/json" class="hidden">
@@ -375,6 +375,11 @@ async function boot(){
   pruneWinNote();
   updateChrome();
   render();
+  // setup de una sola vez: abrir con #editar muestra el cuadro para pegar el token
+  if(!editor && (location.hash||'').toLowerCase()==='#editar'){
+    const m=document.getElementById('loginModal');
+    if(m){ document.getElementById('loginErr').textContent=''; m.classList.remove('hidden'); const p=document.getElementById('loginPass'); if(p) p.focus(); }
+  }
 }
 function pruneWinNote(){
   const before=state.tasks.length;
@@ -392,8 +397,8 @@ function updateChrome(){
   show('resetBtn', editor);
   show('clearPrioBtn', editor);
   show('importBtn', editor);
-  show('authBtn', true);
-  const ab=document.getElementById('authBtn'); if(ab) ab.textContent = editor ? 'Salir de edición' : 'Editar (soy Lu)';
+  show('authBtn', editor);   // solo visible para vos (ya logueada); los demás no ven nada de editar
+  const ab=document.getElementById('authBtn'); if(ab) ab.textContent = 'Cerrar edición';
   const sub=document.getElementById('subtitle');
   if(sub) sub.innerHTML = editor
     ? 'Notas generales de la reunión. Tildá <strong>Prioridad</strong> para subirla arriba y asignale <em>Alta / Media / Baja</em>. Con el <strong>+</strong> (a la izquierda) sumás subtareas. A la derecha elegís en qué va: <strong>Demo</strong> y/o <strong>Trailer</strong>.'
