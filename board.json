@@ -238,7 +238,7 @@
         },
         {
           "id": "s56",
-          "text": "Contador de pasajeros"
+          "text": "Implementacion Conteo de pasajeros"
         },
         {
           "id": "s57",
@@ -255,6 +255,10 @@
         {
           "id": "s104",
           "text": "Diseño Tiempo"
+        },
+        {
+          "id": "s105",
+          "text": ""
         }
       ]
     },
@@ -466,5 +470,5 @@
       "subtasks": []
     }
   ],
-  "seq": 105
+  "seq": 106
 }
