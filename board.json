@@ -264,7 +264,8 @@
         {
           "id": "s57",
           "text": "implementación contador monetario",
-          "status": "done"
+          "status": "done",
+          "assignee": "PABLO"
         },
         {
           "id": "s83",
