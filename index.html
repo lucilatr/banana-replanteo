@@ -182,6 +182,17 @@
   .assign-menu button:hover{background:#f6f4ef}
   .assign-menu button.on{background:#eef1f5;font-weight:600}
   .assign-menu button.none{color:var(--muted)}
+  .sassign{position:relative;flex:0 0 auto}
+  .sassign-btn{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:11px;padding:2px 7px;border-radius:6px;cursor:pointer}
+  .sassign-btn:hover{background:#fbfaf7}
+  .sassign-btn .caret{font-size:8px;opacity:.6}
+  .sassign-menu{position:absolute;top:calc(100% + 5px);right:0;left:auto;z-index:20;background:var(--card);border:1px solid var(--line-strong);border-radius:9px;box-shadow:0 6px 24px rgba(40,38,34,.14);padding:6px;min-width:150px}
+  .sassign-menu.hidden{display:none}
+  .sassign-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13px;padding:7px 9px;border-radius:6px;cursor:pointer;color:var(--ink)}
+  .sassign-menu button:hover{background:#f6f4ef}
+  .sassign-menu button.on{background:#eef1f5;font-weight:600}
+  .sassign-menu button.none{color:var(--muted)}
+  .kparent{font-size:11px;color:var(--muted);margin-bottom:5px;line-height:1.3}
   .kbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
   .kbar-lbl{font-size:12.5px;color:var(--muted)}
   .kgroup{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden}
@@ -479,22 +490,41 @@ function renderKanban(){
       <button data-kg="asignacion" class="${kgroup==='asignacion'?'on':''}">Asignación</button>
     </span>`;
   app.appendChild(bar);
-  const field = kgroup==='asignacion' ? 'assignee' : 'status';
-  const cols = kgroup==='asignacion'
-    ? ASSIGNEES.map(a=>({key:a,name:a,cls:''})).concat([{key:'',name:'Sin asignar',cls:''}])
-    : [{key:'',name:'Sin status',cls:''},{key:'wip',name:'WIP',cls:'wip'},{key:'done',name:'Done',cls:'done'}];
   const board=document.createElement('div'); board.className='kanban';
-  cols.forEach(c=>{
-    const items=state.tasks.filter(t=>(t[field]||'')===c.key);
-    const col=document.createElement('div'); col.className='kcol';
-    col.innerHTML=`<div class="kcol-head ${c.cls}"><span>${c.name}</span><span class="kcount">${items.length}</span></div>`;
-    const list=document.createElement('div'); list.className='kcards';
-    if(items.length===0) list.innerHTML='<div class="kempty">—</div>';
-    else items.forEach(t=> list.appendChild(kcard(t)));
-    col.appendChild(list); board.appendChild(col);
-  });
+  if(kgroup==='asignacion'){
+    const cols=ASSIGNEES.map(a=>({key:a,name:a,cls:''})).concat([{key:'',name:'Sin asignar',cls:''}]);
+    cols.forEach(c=>{
+      const cards=[];
+      state.tasks.forEach(t=>{
+        const subs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim());
+        if(subs.length){ subs.forEach(s=>{ if((s.assignee||'')===c.key) cards.push(ksubcard(t,s)); }); }
+        else if((t.assignee||'')===c.key){ cards.push(kcard(t)); }
+      });
+      board.appendChild(kcolEl(c, cards));
+    });
+  } else {
+    const cols=[{key:'',name:'Sin status',cls:''},{key:'wip',name:'WIP',cls:'wip'},{key:'done',name:'Done',cls:'done'}];
+    cols.forEach(c=>{
+      const cards=state.tasks.filter(t=>(t.status||'')===c.key).map(t=>kcard(t));
+      board.appendChild(kcolEl(c, cards));
+    });
+  }
   app.appendChild(board);
   const st=document.getElementById('stat'); if(st) st.textContent=`${state.tasks.length} notas`;
+}
+function kcolEl(c, cards){
+  const col=document.createElement('div'); col.className='kcol';
+  col.innerHTML=`<div class="kcol-head ${c.cls}"><span>${c.name}</span><span class="kcount">${cards.length}</span></div>`;
+  const list=document.createElement('div'); list.className='kcards';
+  if(cards.length===0) list.innerHTML='<div class="kempty">—</div>';
+  else cards.forEach(cd=> list.appendChild(cd));
+  col.appendChild(list); return col;
+}
+function ksubcard(t,s){
+  const el=document.createElement('div'); el.className='kcard';
+  const asg=s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:'';
+  el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${esc(s.text)}</div><div class="kmeta">${asg}</div>`;
+  return el;
 }
 
 function renderList(){
@@ -537,7 +567,7 @@ function taskEl(t){
   // ----- read-only -----
   if(!editor){
     const lvl = t.prio ? `<div class="meta"><span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span></div>` : '';
-    const subsRo=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).map(s=>`<div class="sub"><span class="sub-bullet"></span><div class="sub-text">${esc(s.text)}</div></div>`).join('');
+    const subsRo=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).map(s=>`<div class="sub"><span class="sub-bullet"></span><div class="sub-text">${esc(s.text)}</div>${s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:''}</div>`).join('');
     el.innerHTML = `
       <span class="check-ro ${t.prio?'on':''}"></span>
       <div class="body">
@@ -548,7 +578,7 @@ function taskEl(t){
       <div class="controls">
         <span class="stage-ro">${stageChips || '<span class="muted">—</span>'}</span>
         ${t.status ? `<span class="status"><span class="chip ${t.status}">${({wip:'WIP',done:'Done'})[t.status]}</span></span>` : ''}
-        ${t.prio && t.assignee ? `<span class="assign"><span class="chip assignee">${esc(t.assignee)}</span></span>` : ''}
+        ${t.prio && t.assignee && !(t.subtasks||[]).some(s=>s.text&&s.text.trim()) ? `<span class="assign"><span class="chip assignee">${esc(t.assignee)}</span></span>` : ''}
       </div>`;
     return el;
   }
@@ -564,7 +594,7 @@ function taskEl(t){
       </span>
     </div>` : '';
 
-  const subsEd=(t.subtasks||[]).map(s=>`<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><button class="sub-del" title="Eliminar subtarea">×</button></div>`).join('');
+  const subsEd=(t.subtasks||[]).map(s=>{const sa=s.assignee||'';return `<div class="sub" data-sid="${s.id}"><span class="sub-bullet"></span><div class="sub-text" contenteditable="true" spellcheck="false">${esc(s.text)}</div><span class="sassign"><button class="sassign-btn" type="button">${sa?`<span class="chip assignee">${esc(sa)}</span>`:'<span class="caret">Asignar ▾</span>'}</button><div class="sassign-menu hidden">${ASSIGNEES.map(a=>`<button data-sassignee="${esc(a)}" class="${sa===a?'on':''}">${esc(a)}</button>`).join('')}<button data-sassignee="" class="none">— Sin asignar</button></div></span><button class="sub-del" title="Eliminar subtarea">×</button></div>`;}).join('');
   const _st=t.status||'', _stN={wip:'WIP',done:'Done'};
   const statusCtl = `
       <span class="status">
@@ -576,7 +606,8 @@ function taskEl(t){
         </div>
       </span>`;
   const _as=t.assignee||'';
-  const assignCtl = t.prio ? `
+  const _hasSubs=(t.subtasks||[]).some(s=>s.text&&s.text.trim());
+  const assignCtl = (t.prio && !_hasSubs) ? `
       <span class="assign">
         <button class="assign-btn" type="button">${_as?`<span class="chip assignee">${esc(_as)}</span>`:'<span class="caret">Asignar ▾</span>'}</button>
         <div class="assign-menu hidden">
@@ -685,7 +716,7 @@ app.addEventListener('click', e=>{
   if(sBtn){
     const menu=sBtn.parentElement.querySelector('.stage-menu');
     const wasHidden=menu.classList.contains('hidden');
-    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden'));
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu, .sassign-menu').forEach(m=>m.classList.add('hidden'));
     if(wasHidden) menu.classList.remove('hidden');
     e.stopPropagation(); return;
   }
@@ -695,7 +726,7 @@ app.addEventListener('click', e=>{
   if(stBtn){
     const menu=stBtn.parentElement.querySelector('.status-menu');
     const wasHidden=menu.classList.contains('hidden');
-    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden'));
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu, .sassign-menu').forEach(m=>m.classList.add('hidden'));
     if(wasHidden) menu.classList.remove('hidden');
     e.stopPropagation(); return;
   }
@@ -706,12 +737,28 @@ app.addEventListener('click', e=>{
   if(asgBtn){
     const menu=asgBtn.parentElement.querySelector('.assign-menu');
     const wasHidden=menu.classList.contains('hidden');
-    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden'));
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu, .sassign-menu').forEach(m=>m.classList.add('hidden'));
     if(wasHidden) menu.classList.remove('hidden');
     e.stopPropagation(); return;
   }
   const asgOpt=e.target.closest('.assign-menu button[data-assignee]');
   if(asgOpt && taskDiv){ getTask(taskDiv.dataset.id).assignee=asgOpt.dataset.assignee; save(); render(); return; }
+
+  const saBtn=e.target.closest('.sassign-btn');
+  if(saBtn){
+    const menu=saBtn.parentElement.querySelector('.sassign-menu');
+    const wasHidden=menu.classList.contains('hidden');
+    document.querySelectorAll('.stage-menu, .status-menu, .assign-menu, .sassign-menu').forEach(m=>m.classList.add('hidden'));
+    if(wasHidden) menu.classList.remove('hidden');
+    e.stopPropagation(); return;
+  }
+  const saOpt=e.target.closest('.sassign-menu button[data-sassignee]');
+  if(saOpt && taskDiv){
+    const sid=saOpt.closest('.sub').dataset.sid;
+    const t=getTask(taskDiv.dataset.id); const s=(t.subtasks||[]).find(x=>x.id===sid);
+    if(s){ s.assignee=saOpt.dataset.sassignee; save(); render(); }
+    return;
+  }
 });
 
 app.addEventListener('blur', e=>{
@@ -731,7 +778,7 @@ app.addEventListener('blur', e=>{
 app.addEventListener('keydown', e=>{
   if((e.target.classList.contains('text')||e.target.classList.contains('sub-text')) && e.key==='Enter'){ e.preventDefault(); e.target.blur(); }
 });
-document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .status-menu, .assign-menu').forEach(m=>m.classList.add('hidden')); });
+document.addEventListener('click', ()=>{ document.querySelectorAll('.stage-menu, .status-menu, .assign-menu, .sassign-menu').forEach(m=>m.classList.add('hidden')); });
 
 // toolbar
 document.getElementById('resetBtn').addEventListener('click', ()=>{
