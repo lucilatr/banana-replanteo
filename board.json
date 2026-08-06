@@ -400,7 +400,9 @@
         "trailer"
       ],
       "order": 14,
-      "assignee": "FER"
+      "assignee": "FER",
+      "doneAt": null,
+      "status": "wip"
     },
     {
       "id": "t47",
