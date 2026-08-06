@@ -176,7 +176,7 @@
       <button class="btn ghost" id="exportBtn">Exportar</button>
       <button class="btn ghost hidden" id="importBtn">Importar</button>
       <input type="file" id="importFile" accept="application/json" class="hidden">
-      <span id="sync" style="font-size:12.5px;font-weight:600;color:#8d8a82">○ Modo local</span>
+      <span id="sync" style="font-size:12.5px;font-weight:600;color:#8d8a82">○ Conectando…</span>
       <span class="stat" id="stat"></span>
     </div>
   </header>
@@ -191,7 +191,8 @@
 <div id="loginModal" class="modal hidden">
   <div class="modal-card">
     <h3>Entrar para editar</h3>
-    <input id="loginPass" type="password" placeholder="Contraseña de edición" autocomplete="current-password">
+    <p style="font-size:12.5px;color:#8d8a82;margin:0 0 10px;line-height:1.45">Pegá tu <strong>token de GitHub</strong> (fine-grained, con permiso <em>Contents: Read and write</em> en el repo <code>banana-replanteo</code>). Se guarda solo en este navegador. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" style="color:#4b5563">Crear token ↗</a></p>
+    <input id="loginPass" type="password" placeholder="github_pat_… / ghp_…" autocomplete="off">
     <div class="err" id="loginErr"></div>
     <div class="modal-actions">
       <button class="btn" id="loginCancel">Cancelar</button>
@@ -203,16 +204,17 @@
 <script>
 const STORE_KEY = 'banana-replanteo-tareas-v2';
 
-// ===== Sincronización vía Cloudflare Worker + KV =====
-const API = '/api/board';
-const POLL_MS = 4000;                                   // refresco de lectura (near real-time)
-const SHARED = /^https?:/.test(location.protocol);      // http(s): sincroniza · file://: modo local
-const TOKEN_KEY = 'banana-edit-token';
+// ===== Datos en GitHub (board.json). Lectura pública · escritura con token. =====
+const GH = { owner:'lucilatr', repo:'banana-replanteo', branch:'main', path:'board.json' };
+const CONTENTS_URL = 'https://api.github.com/repos/'+GH.owner+'/'+GH.repo+'/contents/'+GH.path;
+const POLL_MS = 90000;                 // relectura suave (los demás ven al abrir/refrescar y cada ~90s)
+const TOKEN_KEY = 'banana-gh-token';
 function getToken(){ try{ return localStorage.getItem(TOKEN_KEY)||''; }catch(e){ return ''; } }
 function setToken(t){ try{ if(t) localStorage.setItem(TOKEN_KEY,t); else localStorage.removeItem(TOKEN_KEY); }catch(e){} }
-let editor = SHARED ? !!getToken() : true;   // en modo local editás; en compartido, solo con contraseña
-let dirty = false;       // hay cambios locales sin subir todavía
-let lastServer = '';     // último JSON visto del server (para detectar cambios)
+let editor = false;      // se activa al validar tu token de GitHub
+let dirty = false;       // cambios sin commitear todavía
+let curSha = null;       // sha actual de board.json (necesario para el commit)
+let lastServer = '';
 
 const CAT_NAME = {dev:'Dev', arte:'Arte', animacion:'Animación'};
 function catLabel(k){ return CAT_NAME[k] || 'Categoría'; }
@@ -297,58 +299,79 @@ function load(){
 }
 function save(){
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
-  if(SHARED && editor) dirty = true;
+  if(editor) dirty = true;
   scheduleRemote();
 }
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ---------- sincronización (Cloudflare Worker + KV) ----------
+// ---------- sincronización (GitHub: board.json) ----------
+function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+function b64decode(b64){ return decodeURIComponent(escape(atob((b64||'').replace(/\s/g,'')))); }
+
 let pushTimer=null;
-function scheduleRemote(){ if(!SHARED||!editor) return; clearTimeout(pushTimer); pushTimer=setTimeout(putBoard,500); }
-async function fetchBoard(){
-  const r = await fetch(API, {cache:'no-store'});
-  if(!r.ok) throw new Error('fetch '+r.status);
-  return await r.text();
+function scheduleRemote(){ if(!editor) return; clearTimeout(pushTimer); pushTimer=setTimeout(commitBoard,1500); }
+
+async function ghGet(){
+  const tok=getToken();
+  if(tok){
+    // editora: API (trae el sha para poder commitear)
+    const r=await fetch(CONTENTS_URL+'?ref='+GH.branch+'&_='+Date.now(), {headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok}, cache:'no-store'});
+    if(r.status===404) return {sha:null, data:null};
+    if(!r.ok) throw new Error('GET '+r.status);
+    const j=await r.json();
+    return {sha:j.sha, data: JSON.parse(b64decode(j.content))};
+  }
+  // viewers: raw (sin límite de rate)
+  const r=await fetch('https://raw.githubusercontent.com/'+GH.owner+'/'+GH.repo+'/'+GH.branch+'/'+GH.path+'?_='+Date.now(), {cache:'no-store'});
+  if(r.status===404) return {sha:null, data:null};
+  if(!r.ok) throw new Error('GETraw '+r.status);
+  return {sha:null, data: await r.json()};
 }
-async function putBoard(){
-  if(!SHARED||!editor) return;
-  const body = JSON.stringify(state);
+async function commitBoard(){
+  if(!editor) return;
+  const tok=getToken(); if(!tok){ editor=false; updateChrome(); render(); return; }
+  const stamp=new Date().toISOString().slice(0,16).replace('T',' ');
+  const payload={ message:'Actualizar lista ('+stamp+')', content:b64encode(JSON.stringify(state,null,2)), branch:GH.branch };
+  if(curSha) payload.sha=curSha;
+  const hdr={'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok,'Content-Type':'application/json'};
   try{
-    const r = await fetch(API, {method:'PUT', headers:{'Content-Type':'application/json','X-Edit-Token':getToken()}, body});
-    if(r.status===401){ setToken(''); editor=false; dirty=false; setSync('err'); updateChrome(); render(); alert('Contraseña de edición incorrecta o vencida. Volvé a entrar con "Editar".'); return; }
-    if(!r.ok) throw new Error('put '+r.status);
-    dirty=false; lastServer=body; setSync('ok');
+    setSync('...');
+    let r=await fetch(CONTENTS_URL, {method:'PUT', headers:hdr, body:JSON.stringify(payload)});
+    if(r.status===409){ const cur=await ghGet(); curSha=cur.sha; payload.sha=curSha; r=await fetch(CONTENTS_URL, {method:'PUT', headers:hdr, body:JSON.stringify(payload)}); }
+    if(r.status===401||r.status===403){ setToken(''); editor=false; dirty=false; setSync('err'); updateChrome(); render(); alert('Tu token de GitHub no es válido o no tiene permiso de escritura. Volvé a entrar con "Editar".'); return; }
+    if(!r.ok) throw new Error('PUT '+r.status);
+    const j=await r.json(); curSha=j.content&&j.content.sha; dirty=false; lastServer=JSON.stringify(state); setSync('ok');
   }catch(e){ setSync('err'); }
 }
-async function poll(){
-  if(dirty) return;                       // no piso cambios locales sin subir
+async function refresh(){
+  if(dirty || isEditingText()) return;
   try{
-    const txt = await fetchBoard();
-    setSync('ok');
-    if(txt && txt!=='null' && txt!==lastServer){
-      lastServer = txt;
-      const incoming = JSON.parse(txt);
-      if(incoming && incoming.tasks && !isEditingText() && JSON.stringify(state)!==txt){
-        state = incoming; pruneWinNote(); render();
-      }
-    }
+    const {sha,data}=await ghGet(); curSha=sha; setSync('ok');
+    if(data && data.tasks && JSON.stringify(data)!==JSON.stringify(state)){ state=data; pruneWinNote(); render(); }
   }catch(e){ setSync('err'); }
 }
 function isEditingText(){ const a=document.activeElement; return !!(a&&a.classList&&(a.classList.contains('text')||a.classList.contains('sub-text'))); }
+async function verifyToken(tok){
+  try{
+    const r=await fetch('https://api.github.com/repos/'+GH.owner+'/'+GH.repo, {headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok}});
+    if(!r.ok) return false;
+    const j=await r.json();
+    return !!(j.permissions && (j.permissions.push || j.permissions.admin || j.permissions.maintain));
+  }catch(e){ return false; }
+}
 async function boot(){
-  if(SHARED){
-    setSync('...');
-    try{
-      const txt = await fetchBoard();
-      if(txt && txt!=='null'){ const j=JSON.parse(txt); if(j&&j.tasks){ state=j; lastServer=txt; } }
-      else if(editor){ state=load(); await putBoard(); }   // board vacío: lo siembro si soy editora
-      else { state=load(); }
-      setSync('ok');
-    }catch(e){ state=load(); setSync('err'); }
-    setInterval(poll, POLL_MS);
-  } else {
-    state = load(); setSync('local');
-  }
+  setSync('...');
+  const tok=getToken();
+  if(tok){ editor = await verifyToken(tok); if(!editor) setToken(''); }
+  try{
+    const {sha,data}=await ghGet(); curSha=sha;
+    if(data && data.tasks){ state=data; lastServer=JSON.stringify(state); }
+    else if(editor){ state=load(); await commitBoard(); }   // board.json no existe: lo creo
+    else { state=load(); }
+    setSync('ok');
+  }catch(e){ state=load(); setSync('err'); }
+  setInterval(refresh, POLL_MS);
+  window.addEventListener('focus', refresh);
   pruneWinNote();
   updateChrome();
   render();
@@ -360,7 +383,7 @@ function pruneWinNote(){
 }
 function setSync(s){
   const el=document.getElementById('sync'); if(!el) return;
-  const map={ok:['● En vivo','#3d8a5f'],'...':['○ Conectando…','#8d8a82'],err:['● Sin conexión','#c0563e'],local:['○ Modo local','#8d8a82']};
+  const map={ok:['● Conectado a GitHub','#3d8a5f'],'...':['○ Guardando…','#8d8a82'],err:['● Sin conexión','#c0563e'],local:['○ Local','#8d8a82']};
   const v=map[s]||map.local; el.textContent=v[0]; el.style.color=v[1];
 }
 
@@ -369,12 +392,12 @@ function updateChrome(){
   show('resetBtn', editor);
   show('clearPrioBtn', editor);
   show('importBtn', editor);
-  show('authBtn', SHARED);
+  show('authBtn', true);
   const ab=document.getElementById('authBtn'); if(ab) ab.textContent = editor ? 'Salir de edición' : 'Editar (soy Lu)';
   const sub=document.getElementById('subtitle');
   if(sub) sub.innerHTML = editor
     ? 'Notas generales de la reunión. Tildá <strong>Prioridad</strong> para subirla arriba y asignale <em>Alta / Media / Baja</em>. Con el <strong>+</strong> (a la izquierda) sumás subtareas. A la derecha elegís en qué va: <strong>Demo</strong> y/o <strong>Trailer</strong>.'
-    : 'Notas generales de la reunión — vista de solo lectura, se actualiza en vivo.';
+    : 'Notas generales de la reunión — vista de solo lectura (se actualiza al abrir/refrescar).';
   const foot=document.getElementById('foot');
   if(foot) foot.innerHTML = 'Notas de la reunión "Banana Airways · Visual Direction Review" — 6 ago 2026.' + (editor ? '<br/>Editá el texto haciendo clic en cualquier nota. Agregá notas con el botón al final.' : '');
 }
@@ -580,28 +603,24 @@ document.getElementById('clearPrioBtn').addEventListener('click', ()=>{
   if(confirm('¿Sacar todas las notas de Prioridades? (vuelven a la lista)')){ state.tasks.forEach(t=>t.prio=false); save(); render(); }
 });
 
-// login por contraseña (la valida el Worker)
+// login con token de GitHub (se guarda solo en tu navegador)
 const modal=document.getElementById('loginModal');
 document.getElementById('authBtn').addEventListener('click', ()=>{
-  if(!SHARED) return;
   if(editor){ setToken(''); editor=false; dirty=false; updateChrome(); render(); }
   else { document.getElementById('loginErr').textContent=''; modal.classList.remove('hidden'); document.getElementById('loginPass').focus(); }
 });
 document.getElementById('loginCancel').addEventListener('click', ()=> modal.classList.add('hidden'));
 document.getElementById('loginGo').addEventListener('click', async ()=>{
-  const pass=document.getElementById('loginPass').value;
+  const tok=document.getElementById('loginPass').value.trim();
   const err=document.getElementById('loginErr');
-  if(!pass){ err.textContent='Poné la contraseña.'; return; }
+  if(!tok){ err.textContent='Pegá tu token de GitHub.'; return; }
   err.textContent='Verificando…';
-  try{
-    const body=JSON.stringify(state);
-    const r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json','X-Edit-Token':pass},body});
-    if(r.status===401){ err.textContent='Contraseña incorrecta.'; return; }
-    if(!r.ok){ err.textContent='Error de conexión, probá de nuevo.'; return; }
-    setToken(pass); editor=true; dirty=false; lastServer=body;
-    err.textContent=''; modal.classList.add('hidden'); document.getElementById('loginPass').value='';
-    updateChrome(); render();
-  }catch(e){ err.textContent='Error de conexión.'; }
+  const ok=await verifyToken(tok);
+  if(!ok){ err.textContent='Token inválido o sin permiso de escritura en el repo.'; return; }
+  setToken(tok); editor=true; dirty=false;
+  try{ const cur=await ghGet(); curSha=cur.sha; }catch(e){}
+  err.textContent=''; modal.classList.add('hidden'); document.getElementById('loginPass').value='';
+  updateChrome(); render();
 });
 document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('loginGo').click(); });
 
@@ -617,7 +636,7 @@ function importJson(file){
     const j=JSON.parse(rd.result); if(!j||!j.tasks) throw 0;
     state=j; if(typeof state.seq!=='number') state.seq=state.tasks.length+1;
     pruneWinNote(); save(); render();
-    alert('Lista importada ✓'+(SHARED&&editor?' y subida a la nube.':''));
+    alert('Lista importada ✓'+(editor?' y guardada en GitHub.':''));
   }catch(e){ alert('No pude leer ese archivo (¿es el JSON exportado con "Exportar"?).'); } };
   rd.readAsText(file);
 }

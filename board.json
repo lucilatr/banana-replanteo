@@ -1,0 +1,400 @@
+{
+  "tasks": [
+    {
+      "id": "t3",
+      "category": "dev",
+      "text": "Inyecciones de extracto de banana para estabilizar pasajeros y bajar su nivel de locura.",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 2,
+      "subtasks": [
+        {
+          "id": "s62",
+          "text": "armar sistema"
+        },
+        {
+          "id": "s63",
+          "text": "asset"
+        },
+        {
+          "id": "s64",
+          "text": "anim inyectando"
+        },
+        {
+          "id": "s65",
+          "text": "anim siendo inyectado"
+        },
+        {
+          "id": "s72",
+          "text": "anim vuelve a la normalidad"
+        }
+      ]
+    },
+    {
+      "id": "t4",
+      "category": "dev",
+      "text": "Tres estados de pasajero: normal → desesperado (mutación) → amenaza extrema.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t5",
+      "category": "dev",
+      "text": "Hambre / comportamientos extremos: un pasajero se come al de al lado si no lo alimentás. Mantenerlos alimentados y calmos.",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 3
+    },
+    {
+      "id": "t6",
+      "category": "dev",
+      "text": "Congelamiento a gran altura: los personajes se congelan como bloques de hielo.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t7",
+      "category": "dev",
+      "text": "Eventos que interrumpen el pilotaje (cortes de luz, congelamiento de alas) para forzar a dejar el puesto y resolver problemas.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t10",
+      "category": "dev",
+      "text": "Rescate de pasajeros antes de que exploten o muten.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t11",
+      "category": "dev",
+      "text": "Mapa procedural con reactores nucleares en zonas específicas",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t13",
+      "category": "dev",
+      "text": "Economía / rejugabilidad: juntar dinero para mejorar la aerolínea o comprar equipamiento",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t14",
+      "category": "dev",
+      "text": "Heladera / inventario: comprar objetos (jeringas) durante el vuelo; el objeto entregado debe ser de fácil acceso.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t15",
+      "category": "dev",
+      "text": "Tutorial no restrictivo: aprendizaje natural interactuando con objetos, guiado por indicadores contextuales.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t17",
+      "category": "dev",
+      "text": "Idea futura: jugadores que se inyectan entre sí / mutación que también afecta al piloto.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t18",
+      "category": "dev",
+      "text": "fusionar mecánicas (tornado gigante + zonas nucleares) para navegación más compleja.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t19",
+      "category": "dev",
+      "text": "Idea futura: explosión de personaje que rompe el avión (complejo → etapa posterior).",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t21",
+      "category": "arte",
+      "text": "Mejorar la expresividad de los pasajeros para generar conexión emocional (que den interés o rechazo). Rig facial estilo stop-motion, expresiones extremas (risa, enojo, pánico).",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 5,
+      "subtasks": [
+        {
+          "id": "s60",
+          "text": "poses"
+        }
+      ]
+    },
+    {
+      "id": "t22",
+      "category": "arte",
+      "text": "Personalización y variedad de pasajeros (cuerpos, ropa, edades, accesorios de cabeza / pelucas, props)",
+      "prio": true,
+      "level": "high",
+      "stages": [],
+      "order": 6
+    },
+    {
+      "id": "t23",
+      "category": "arte",
+      "text": "Prueba de deformación de huesos (escalar huesos, exportar a Unity) para verificar las deformaciones de los mutantes.",
+      "prio": true,
+      "level": "high",
+      "stages": [],
+      "order": 54
+    },
+    {
+      "id": "t24",
+      "category": "arte",
+      "text": "Ragdoll vs. mancha para los cuerpos tras una explosión: evaluar cuál optimiza el desarrollo.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t25",
+      "category": "arte",
+      "text": "Central nuclear: concepto limpio + modelo base (mesh) para integrar al mapa.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t26",
+      "category": "arte",
+      "text": "Zona de equipaje: rediseñarla como repisa funcional para poner maletas (hoy tiene partes despegadas y huecos).",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t27",
+      "category": "arte",
+      "text": "Ventanas del avión: hacerlas redondeadas y separar el material de vidrio del marco en Blender.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t28",
+      "category": "arte",
+      "text": "Humos de colores para las zonas radioactivas, para alertar del peligro inminente.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t29",
+      "category": "arte",
+      "text": "Explosiones de personajes + decals sobre el avión; buscar efectos de líquidos (sustancia verde) en el Asset Store de Unity.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t34",
+      "category": "dev",
+      "text": "Trabajar con conceptos base para una implementación inicial, reemplazables más adelante.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t35",
+      "category": "dev",
+      "text": "UI",
+      "prio": true,
+      "level": "high",
+      "stages": [],
+      "order": 7,
+      "subtasks": [
+        {
+          "id": "s55",
+          "text": "Tiempo"
+        },
+        {
+          "id": "s56",
+          "text": "Contador de pasajeros"
+        },
+        {
+          "id": "s57",
+          "text": "contador monetario"
+        }
+      ]
+    },
+    {
+      "id": "t38",
+      "category": "dev",
+      "text": "Comida exagerada / asquerosa; los pollos comen mucho.",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 9
+    },
+    {
+      "id": "t39",
+      "category": "dev",
+      "text": "Viento al salir: que se sienta la velocidad y el peligro de salir; estar afuera sube el nivel de peligro.",
+      "prio": true,
+      "level": "high",
+      "stages": [],
+      "order": 10
+    },
+    {
+      "id": "t40",
+      "category": "dev",
+      "text": "Caos ambiental / magnético del avión en la zona nuclear/radioactiva",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 11
+    },
+    {
+      "id": "t41",
+      "category": "dev",
+      "text": "Mapa vivo que responde al vuelo; zonas peligrosas con ícono (nuclear que se expande) para esquivar.",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 12,
+      "subtasks": [
+        {
+          "id": "s58",
+          "text": "armar sistema"
+        },
+        {
+          "id": "s59",
+          "text": "ui"
+        }
+      ]
+    },
+    {
+      "id": "t42",
+      "category": "",
+      "text": "Al cruzar una zona nuclear los pollos se enloquecen, mutan, se vuelven violentos y se atacan entre sí.",
+      "prio": true,
+      "level": "med",
+      "stages": [],
+      "order": 13,
+      "subtasks": [
+        {
+          "id": "s66",
+          "text": "anim enloquece"
+        },
+        {
+          "id": "s67",
+          "text": "anim-pose mutando a/b"
+        },
+        {
+          "id": "s69",
+          "text": "mod deformado"
+        },
+        {
+          "id": "s70",
+          "text": "textura mutante"
+        },
+        {
+          "id": "s71",
+          "text": "fx liquido radioactivo"
+        }
+      ]
+    },
+    {
+      "id": "t43",
+      "category": "arte",
+      "text": "Mejorar las texturas de los personajes",
+      "prio": true,
+      "level": "high",
+      "stages": [],
+      "order": 14
+    },
+    {
+      "id": "t46",
+      "category": "dev",
+      "text": "UI que muestre progreso; que se entienda qué hacer (si no hago nada, ¿qué pasa?).",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t47",
+      "category": "dev",
+      "text": "Más acciones y vínculo con los pasajeros (hoy solo el café).",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": [
+        {
+          "id": "s53",
+          "text": "Definir qué otra comida queremos sumar"
+        }
+      ]
+    },
+    {
+      "id": "t48",
+      "category": "dev",
+      "text": "Si te drogás, flotás.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t49",
+      "category": "dev",
+      "text": "Criatura gigante: un pasajero se transforma en un bicho enorme dentro del avión que te quiere matar.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    },
+    {
+      "id": "t50",
+      "category": "arte",
+      "text": "Luces dinámicas animadas en emergencias / momentos de terror.",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0
+    }
+  ],
+  "seq": 73
+}
