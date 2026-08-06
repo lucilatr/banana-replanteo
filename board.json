@@ -286,6 +286,10 @@
         {
           "id": "s106",
           "text": "Animacion caminata con resistencia por el viento"
+        },
+        {
+          "id": "s107",
+          "text": ""
         }
       ],
       "status": "wip",
@@ -476,5 +480,5 @@
       "subtasks": []
     }
   ],
-  "seq": 107
+  "seq": 108
 }
