@@ -72,10 +72,10 @@
       "id": "t11",
       "category": "dev",
       "text": "Mapa procedural con reactores nucleares en zonas específicas",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0
+      "order": 79
     },
     {
       "id": "t13",
@@ -413,5 +413,5 @@
       "subtasks": []
     }
   ],
-  "seq": 79
+  "seq": 80
 }
