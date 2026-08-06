@@ -98,10 +98,10 @@
       "id": "t14",
       "category": "dev",
       "text": "Heladera / inventario: comprar objetos (jeringas) durante el vuelo",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0,
+      "order": 96,
       "status": "wip",
       "subtasks": [
         {
@@ -496,5 +496,5 @@
       "subtasks": []
     }
   ],
-  "seq": 96
+  "seq": 97
 }
