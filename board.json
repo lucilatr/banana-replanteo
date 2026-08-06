@@ -466,10 +466,10 @@
       "id": "t82",
       "category": "",
       "text": "tornado, cambiar al color de los humos de los reactores nucleares y que se active cuando el avion esta cerca",
-      "prio": false,
+      "prio": true,
       "level": "med",
       "stages": [],
-      "order": 0,
+      "order": 98,
       "subtasks": []
     },
     {
@@ -493,5 +493,5 @@
       "subtasks": []
     }
   ],
-  "seq": 98
+  "seq": 99
 }
