@@ -234,7 +234,7 @@
       "subtasks": [
         {
           "id": "s55",
-          "text": "Tiempo"
+          "text": "Implementacion Tiempo"
         },
         {
           "id": "s56",
@@ -251,6 +251,10 @@
         {
           "id": "s84",
           "text": "Altitud (en la cabina o en pantalla de player?)"
+        },
+        {
+          "id": "s104",
+          "text": ""
         }
       ]
     },
@@ -462,5 +466,5 @@
       "subtasks": []
     }
   ],
-  "seq": 104
+  "seq": 105
 }
