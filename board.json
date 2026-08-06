@@ -296,11 +296,17 @@
     {
       "id": "t40",
       "category": "dev",
-      "text": "Caos ambiental del avión en la zona nuclear/radioactiva",
+      "text": "Caos ambiental en la zona nuclear/radioactiva",
       "prio": true,
       "level": "med",
       "stages": [],
-      "order": 11
+      "order": 11,
+      "subtasks": [
+        {
+          "id": "s88",
+          "text": ""
+        }
+      ]
     },
     {
       "id": "t42",
@@ -450,5 +456,5 @@
       "subtasks": []
     }
   ],
-  "seq": 88
+  "seq": 89
 }
