@@ -253,7 +253,8 @@
       ],
       "order": 101,
       "doneAt": null,
-      "status": "wip"
+      "status": "wip",
+      "assignee": "AGEZMA"
     },
     {
       "id": "t35",
