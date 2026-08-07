@@ -261,7 +261,8 @@
       "subtasks": [
         {
           "id": "s55",
-          "text": "Implementacion Tiempo"
+          "text": "Implementacion Tiempo",
+          "assignee": "PABLO"
         },
         {
           "id": "s56",
