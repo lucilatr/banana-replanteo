@@ -312,7 +312,13 @@
       "prio": true,
       "level": "low",
       "stages": [],
-      "order": 9
+      "order": 9,
+      "subtasks": [
+        {
+          "id": "s114",
+          "text": ""
+        }
+      ]
     },
     {
       "id": "t39",
@@ -533,5 +539,5 @@
       "subtasks": []
     }
   ],
-  "seq": 114
+  "seq": 115
 }
