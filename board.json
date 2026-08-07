@@ -387,7 +387,8 @@
       "subtasks": [
         {
           "id": "s88",
-          "text": "humo de colores"
+          "text": "humo de colores",
+          "assignee": "PABLO"
         },
         {
           "id": "s89",
