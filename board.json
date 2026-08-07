@@ -476,7 +476,8 @@
       "subtasks": [
         {
           "id": "s53",
-          "text": "Bananas"
+          "text": "Bananas",
+          "status": "done"
         },
         {
           "id": "s116",
@@ -491,7 +492,7 @@
           "text": "hamburguesa?"
         }
       ],
-      "status": "",
+      "status": "wip",
       "doneAt": null
     },
     {
