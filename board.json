@@ -43,7 +43,7 @@
           "id": "s115",
           "text": "Asset jeringa",
           "assignee": "VALEN",
-          "order": 1
+          "order": 3
         }
       ],
       "doneAt": null,
@@ -117,7 +117,7 @@
         "demo",
         "trailer"
       ],
-      "order": 96,
+      "order": 4,
       "status": "wip",
       "subtasks": [],
       "doneAt": null,
@@ -200,7 +200,8 @@
         "demo",
         "trailer"
       ],
-      "order": 6
+      "order": 2,
+      "assignee": "VALEN"
     },
     {
       "id": "t23",
@@ -488,7 +489,8 @@
         {
           "id": "s116",
           "text": "Pollo",
-          "assignee": "VALEN"
+          "assignee": "VALEN",
+          "order": 1
         },
         {
           "id": "s117",
