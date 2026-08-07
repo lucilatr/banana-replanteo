@@ -206,7 +206,9 @@
       "level": "high",
       "stages": [],
       "order": 54,
-      "assignee": "MATEO"
+      "assignee": "MATEO",
+      "doneAt": null,
+      "status": "wip"
     },
     {
       "id": "t24",
