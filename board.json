@@ -186,10 +186,11 @@
         {
           "id": "s111",
           "text": "Mejoras expresión idle",
-          "assignee": "MATEO"
+          "assignee": "MATEO",
+          "status": "wip"
         }
       ],
-      "status": "",
+      "status": "wip",
       "doneAt": null
     },
     {
