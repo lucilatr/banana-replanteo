@@ -532,8 +532,8 @@ function renderKanban(){
       const items=[];
       state.tasks.forEach(t=>{
         const subs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim());
-        if(subs.length){ subs.forEach(s=>{ if((s.assignee||'')===key) items.push({t,s,ord:(s.order!=null?s.order:0)}); }); }
-        else if((t.assignee||'')===key){ items.push({t,s:null,ord:(t.order||0)}); }
+        if(subs.length){ subs.forEach(s=>{ if((s.assignee||'')===key && s.status!=='done') items.push({t,s,ord:(s.order!=null?s.order:0)}); }); }
+        else if((t.assignee||'')===key && t.status!=='done'){ items.push({t,s:null,ord:(t.order||0)}); }
       });
       items.sort((a,b)=> a.ord-b.ord);
       return items.map(it=> it.s ? ksubcard(it.t,it.s) : kcard(it.t));
