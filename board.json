@@ -569,7 +569,10 @@
       "text": "Pajaros se chocan con el avion",
       "prio": false,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 0,
       "subtasks": []
     }
