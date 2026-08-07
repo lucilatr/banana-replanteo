@@ -120,12 +120,7 @@
       "stages": [],
       "order": 96,
       "status": "",
-      "subtasks": [
-        {
-          "id": "s95",
-          "text": "maquina hacedora de extracto de banana: pones 3 y llenas jeringa"
-        }
-      ],
+      "subtasks": [],
       "doneAt": null
     },
     {
