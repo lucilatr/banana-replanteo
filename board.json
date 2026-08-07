@@ -108,18 +108,6 @@
       "order": 0
     },
     {
-      "id": "t11",
-      "category": "dev",
-      "text": "Mapa procedural con reactores nucleares en zonas específicas",
-      "prio": true,
-      "level": "med",
-      "stages": [
-        "demo",
-        "trailer"
-      ],
-      "order": 79
-    },
-    {
       "id": "t14",
       "category": "dev",
       "text": "Heladera / inventario: comprar objetos (jeringas) durante el vuelo",
