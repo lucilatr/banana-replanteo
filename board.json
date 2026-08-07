@@ -498,7 +498,10 @@
       "text": "menu onboarding",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 103,
       "subtasks": []
     },
