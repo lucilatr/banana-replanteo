@@ -265,7 +265,7 @@
 
   <div class="pin">🎯 <strong>Condición de victoria:</strong> llegar a destino con la mayor cantidad de pasajeros vivos y en el menor tiempo.</div>
 
-  <input type="text" id="search" class="searchbox" placeholder="Buscar" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="buscar-tareas">
+  <input type="text" id="search" class="searchbox" placeholder="Buscar" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" readonly data-lpignore="true" data-1p-ignore data-form-type="other" aria-label="Buscar tareas">
 
   <div id="app"></div>
 
@@ -442,9 +442,10 @@ async function commitBoard(){
 }
 async function refresh(){
   if(dirty || isEditingText()) return;
+  const ae=document.activeElement; if(ae && ae.id==='search') return;
   try{
     const {sha,data}=await ghGet(); curSha=sha; setSync('ok');
-    if(data && data.tasks && JSON.stringify(data)!==JSON.stringify(state)){ state=data; pruneWinNote(); normalizeAll(); render(); }
+    if(data && data.tasks && JSON.stringify(data)!==JSON.stringify(state)){ const sy=window.scrollY; state=data; pruneWinNote(); normalizeAll(); render(); window.scrollTo(0,sy); }
   }catch(e){ setSync('err'); }
 }
 function isEditingText(){ const a=document.activeElement; return !!(a&&a.classList&&(a.classList.contains('text')||a.classList.contains('sub-text'))); }
@@ -996,7 +997,12 @@ function importJson(file){
 document.getElementById('exportBtn').addEventListener('click', exportJson);
 document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change', e=>{ if(e.target.files[0]) importJson(e.target.files[0]); e.target.value=''; });
-document.getElementById('search').addEventListener('input', e=>{ searchQ=e.target.value.trim().toLowerCase(); render(); });
+(function(){
+  const s=document.getElementById('search');
+  s.addEventListener('focus', ()=> s.removeAttribute('readonly'));
+  s.addEventListener('input', e=>{ searchQ=e.target.value.trim().toLowerCase(); render(); });
+  try{ s.value=''; }catch(_){}  // por si el navegador lo autocompletó al cargar
+})();
 
 // toggle Lista <-> Kanban
 document.getElementById('viewBtn').addEventListener('click', ()=>{
