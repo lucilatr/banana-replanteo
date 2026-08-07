@@ -16,7 +16,7 @@
           "id": "s62",
           "text": "armar sistema",
           "assignee": "VALEN",
-          "order": 0
+          "order": 1
         },
         {
           "id": "s63",
@@ -133,9 +133,10 @@
         "demo",
         "trailer"
       ],
-      "order": 92,
+      "order": 0,
       "doneAt": null,
-      "status": "wip"
+      "status": "wip",
+      "assignee": "VALEN"
     },
     {
       "id": "t17",
@@ -490,7 +491,7 @@
           "id": "s116",
           "text": "Pollo",
           "assignee": "VALEN",
-          "order": 1
+          "order": 2
         },
         {
           "id": "s117",
