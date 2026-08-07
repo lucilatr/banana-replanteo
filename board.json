@@ -12,7 +12,8 @@
         {
           "id": "s62",
           "text": "armar sistema",
-          "assignee": "VALEN"
+          "assignee": "VALEN",
+          "order": 0
         },
         {
           "id": "s63",
@@ -38,7 +39,8 @@
         {
           "id": "s115",
           "text": "Asset jeringa",
-          "assignee": "VALEN"
+          "assignee": "VALEN",
+          "order": 1
         }
       ],
       "doneAt": null,
