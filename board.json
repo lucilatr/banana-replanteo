@@ -471,7 +471,10 @@
       "text": "Más acciones y vínculo con los pasajeros (hoy solo el café).",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 100,
       "subtasks": [
         {
