@@ -574,7 +574,9 @@
         "trailer"
       ],
       "order": 0,
-      "subtasks": []
+      "subtasks": [],
+      "doneAt": null,
+      "status": "wip"
     }
   ],
   "seq": 121
