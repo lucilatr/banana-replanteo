@@ -449,8 +449,8 @@
       ],
       "order": 14,
       "assignee": "FER",
-      "doneAt": "2026-08-07",
-      "status": "done"
+      "doneAt": null,
+      "status": "wip"
     },
     {
       "id": "t47",
