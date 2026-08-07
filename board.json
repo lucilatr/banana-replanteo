@@ -392,7 +392,8 @@
         },
         {
           "id": "s89",
-          "text": "liquido verde en el piso alrededor del reactor"
+          "text": "liquido verde en el piso alrededor del reactor",
+          "assignee": "PABLO"
         }
       ],
       "doneAt": null,
