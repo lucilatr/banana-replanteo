@@ -17,7 +17,8 @@
         {
           "id": "s63",
           "text": "asset maquina extractora",
-          "assignee": "VALEN"
+          "assignee": "VALEN",
+          "status": "done"
         },
         {
           "id": "s64",
@@ -36,7 +37,7 @@
         }
       ],
       "doneAt": null,
-      "status": ""
+      "status": "wip"
     },
     {
       "id": "t4",
