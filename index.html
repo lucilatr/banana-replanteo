@@ -78,6 +78,7 @@
   .kcard.dragging{opacity:.4}
   .kcol.dropactive{box-shadow:inset 0 0 0 2px var(--accent)}
   .kanban.byassign:not(.dragging) .kcol.empty{display:none}
+  .kbang{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--high);color:#fff;font-size:11px;font-weight:800;margin-right:6px;vertical-align:-2px;flex:0 0 auto}
 
   section.group{margin-top:30px}
   .group-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
@@ -506,15 +507,16 @@ function updateChrome(){
 
 function render(){ if(view==='kanban') renderKanban(); else renderList(); }
 
-function kcard(t){
+function kcard(t, flag){
   const el=document.createElement('div');
   el.className='kcard'+(t.prio?' lvl-'+t.level:'');
   el.draggable=editor; el.dataset.card='task'; el.dataset.id=t.id; el.dataset.ord=(t.order||0);
+  const bang=flag?'<span class="kbang" title="Prioridad sin asignar">!</span>':'';
   const lvl=t.prio?`<span class="lvl-badge b-${t.level}">${({high:'Alta',med:'Media',low:'Baja'})[t.level]}</span>`:'';
   const stages=(t.stages||[]).map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('');
   const nsubs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).length;
   const asg=t.assignee?`<span class="chip assignee">${esc(t.assignee)}</span>`:'';
-  el.innerHTML=`<div class="ktext">${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${asg}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div>`;
+  el.innerHTML=`<div class="ktext">${bang}${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${asg}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div>`;
   return el;
 }
 function renderKanban(){
@@ -535,6 +537,10 @@ function renderKanban(){
         if(subs.length){ subs.forEach(s=>{ if((s.assignee||'')===key && s.status!=='done') items.push({t,s,ord:(s.order!=null?s.order:0)}); }); }
         else if((t.assignee||'')===key && t.status!=='done'){ items.push({t,s:null,ord:(t.order||0)}); }
       });
+      if(key===''){
+        items.sort((a,b)=> (a.t.prio===b.t.prio) ? (a.ord-b.ord) : (a.t.prio?-1:1));
+        return items.map(it=> it.s ? ksubcard(it.t,it.s,it.t.prio) : kcard(it.t,it.t.prio));
+      }
       items.sort((a,b)=> a.ord-b.ord);
       return items.map(it=> it.s ? ksubcard(it.t,it.s) : kcard(it.t));
     };
@@ -559,12 +565,13 @@ function kcolEl(c, cards, field){
   else cards.forEach(cd=> list.appendChild(cd));
   col.appendChild(list); return col;
 }
-function ksubcard(t,s){
+function ksubcard(t,s, flag){
   const el=document.createElement('div'); el.className='kcard';
   el.draggable=editor; el.dataset.card='sub'; el.dataset.id=t.id; el.dataset.sid=s.id; el.dataset.ord=(s.order!=null?s.order:0);
+  const bang=flag?'<span class="kbang" title="Prioridad sin asignar">!</span>':'';
   const asg=s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:'';
   const stc=s.status?`<span class="chip ${s.status}">${({wip:'WIP',done:'Done'})[s.status]}</span>`:'';
-  el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${esc(s.text)}</div><div class="kmeta">${asg}${stc}</div>`;
+  el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${bang}${esc(s.text)}</div><div class="kmeta">${asg}${stc}</div>`;
   return el;
 }
 
