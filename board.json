@@ -301,7 +301,7 @@
           "id": "s104",
           "text": "Diseño Tiempo",
           "assignee": "CARLINI",
-          "order": 0
+          "order": 1
         },
         {
           "id": "s105",
@@ -448,7 +448,7 @@
           "id": "s86",
           "text": "ZONA NUCLEAR: asset para sumar a mapa",
           "assignee": "CARLINI",
-          "order": 1
+          "order": 0
         },
         {
           "id": "s87",
