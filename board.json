@@ -37,7 +37,8 @@
         },
         {
           "id": "s115",
-          "text": "Asset jeringa"
+          "text": "Asset jeringa",
+          "assignee": "VALEN"
         }
       ],
       "doneAt": null,
