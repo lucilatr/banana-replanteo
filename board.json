@@ -120,7 +120,8 @@
       "order": 96,
       "status": "wip",
       "subtasks": [],
-      "doneAt": null
+      "doneAt": null,
+      "assignee": "VALEN"
     },
     {
       "id": "t15",
