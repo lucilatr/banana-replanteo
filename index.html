@@ -65,7 +65,11 @@
   .kcol-head.done{color:#3d8a5f}
   .kcount{font-weight:600;color:var(--muted)}
   .kcards{display:flex;flex-direction:column;gap:8px}
-  .kcard{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 11px;box-shadow:var(--shadow);border-left:3px solid transparent;user-select:none;-webkit-user-select:none}
+  .kcard{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 11px;box-shadow:var(--shadow);border-left:3px solid transparent;user-select:none;-webkit-user-select:none;display:flex;gap:8px;align-items:stretch}
+  .kbody{flex:1 1 auto;min-width:0}
+  .kmove{flex:0 0 auto;display:flex;flex-direction:column;gap:3px;justify-content:center}
+  .kmove button{border:1px solid var(--line-strong);background:var(--card);color:var(--muted);width:24px;height:20px;border-radius:5px;cursor:pointer;font-size:9px;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+  .kmove button:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
   .kcard.lvl-high{border-left-color:var(--high)}
   .kcard.lvl-med{border-left-color:var(--med)}
   .kcard.lvl-low{border-left-color:var(--low)}
@@ -518,7 +522,8 @@ function kcard(t, flag){
   const stages=(t.stages||[]).map(s=>`<span class="chip ${s}">${s==='demo'?'Demo':'Trailer'}</span>`).join('');
   const nsubs=(t.subtasks||[]).filter(s=>s.text&&s.text.trim()).length;
   const asg=t.assignee?`<span class="chip assignee">${esc(t.assignee)}</span>`:'';
-  el.innerHTML=`<div class="ktext">${bang}${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${asg}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div>`;
+  const mv=editor?'<div class="kmove"><button class="kup" title="Subir" draggable="false">▲</button><button class="kdown" title="Bajar" draggable="false">▼</button></div>':'';
+  el.innerHTML=`<div class="kbody"><div class="ktext">${bang}${esc(t.text)}</div><div class="kmeta">${lvl}${stages}${asg}${nsubs?`<span class="ksubs">☰ ${nsubs}</span>`:''}</div></div>${mv}`;
   return el;
 }
 function renderKanban(){
@@ -573,7 +578,8 @@ function ksubcard(t,s, flag){
   const bang=flag?'<span class="kbang" title="Prioridad sin asignar">!</span>':'';
   const asg=s.assignee?`<span class="chip assignee">${esc(s.assignee)}</span>`:'';
   const stc=s.status?`<span class="chip ${s.status}">${({wip:'WIP',done:'Done'})[s.status]}</span>`:'';
-  el.innerHTML=`<div class="kparent">${esc(t.text)}</div><div class="ktext">${bang}${esc(s.text)}</div><div class="kmeta">${asg}${stc}</div>`;
+  const mv=editor?'<div class="kmove"><button class="kup" title="Subir" draggable="false">▲</button><button class="kdown" title="Bajar" draggable="false">▼</button></div>':'';
+  el.innerHTML=`<div class="kbody"><div class="kparent">${esc(t.text)}</div><div class="ktext">${bang}${esc(s.text)}</div><div class="kmeta">${asg}${stc}</div></div>${mv}`;
   return el;
 }
 
@@ -946,6 +952,21 @@ function kanbanDrop(col, idx){
   save(); render();
 }
 function entOf(c){ const t=getTask(c.dataset.id); return {type:c.dataset.card, t, s:(c.dataset.card==='sub' && t) ? (t.subtasks||[]).find(x=>x.id===c.dataset.sid) : null}; }
+function moveCard(cardEl, dir){
+  const col=cardEl && cardEl.closest('.kcol'); if(!col) return;
+  const cards=[...col.querySelectorAll('.kcard')];
+  const i=cards.indexOf(cardEl); const j=i+dir;
+  if(i<0 || j<0 || j>=cards.length) return;
+  const ents=cards.map(entOf);
+  const [m]=ents.splice(i,1); ents.splice(j,0,m);
+  ents.forEach((e,k)=>{ if(e.type==='sub'){ if(e.s) e.s.order=k; } else if(e.t){ e.t.order=k; } });
+  save(); render();
+}
+app.addEventListener('click', e=>{
+  if(!editor) return;
+  const up=e.target.closest('.kup'); if(up){ e.stopPropagation(); moveCard(up.closest('.kcard'),-1); return; }
+  const down=e.target.closest('.kdown'); if(down){ e.stopPropagation(); moveCard(down.closest('.kcard'),1); return; }
+});
 
 // toolbar
 document.getElementById('resetBtn').addEventListener('click', ()=>{
