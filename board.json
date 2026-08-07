@@ -125,7 +125,10 @@
       "text": "Tutorial no restrictivo: aprendizaje natural interactuando con objetos, guiado por indicadores contextuales.",
       "prio": true,
       "level": "med",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 92,
       "doneAt": null,
       "status": "wip"
