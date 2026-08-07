@@ -246,7 +246,7 @@
       "category": "arte",
       "text": "Explosiones de personajes + decals sobre el avión; buscar efectos de líquidos (sustancia verde) en el Asset Store de Unity.",
       "prio": true,
-      "level": "med",
+      "level": "high",
       "stages": [
         "demo",
         "trailer"
