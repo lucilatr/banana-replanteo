@@ -491,7 +491,8 @@
         },
         {
           "id": "s118",
-          "text": "hamburguesa?"
+          "text": "Cafe",
+          "status": "done"
         }
       ],
       "status": "wip",
