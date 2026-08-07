@@ -283,7 +283,8 @@
         {
           "id": "s84",
           "text": "Implementación Altitud (en la cabina o en pantalla de player?)",
-          "status": "done"
+          "status": "done",
+          "assignee": "PABLO"
         },
         {
           "id": "s104",
