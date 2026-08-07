@@ -311,7 +311,10 @@
       "text": "Comida exagerada / asquerosa; los pollos comen mucho.",
       "prio": true,
       "level": "low",
-      "stages": [],
+      "stages": [
+        "demo",
+        "trailer"
+      ],
       "order": 9,
       "subtasks": [
         {
