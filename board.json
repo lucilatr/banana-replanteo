@@ -326,7 +326,9 @@
           "text": "anim comen/mastican",
           "assignee": "MATEO"
         }
-      ]
+      ],
+      "doneAt": null,
+      "status": ""
     },
     {
       "id": "t39",
@@ -560,7 +562,27 @@
       "stages": [],
       "order": 0,
       "subtasks": []
+    },
+    {
+      "id": "t119",
+      "category": "",
+      "text": "Nueva nota",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": []
+    },
+    {
+      "id": "t120",
+      "category": "",
+      "text": "Nueva nota",
+      "prio": false,
+      "level": "med",
+      "stages": [],
+      "order": 0,
+      "subtasks": []
     }
   ],
-  "seq": 119
+  "seq": 121
 }
