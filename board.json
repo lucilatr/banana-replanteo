@@ -419,7 +419,8 @@
         {
           "id": "s71",
           "text": "fx liquido radioactivo",
-          "assignee": "AGEZMA"
+          "assignee": "AGEZMA",
+          "status": "wip"
         },
         {
           "id": "s86",
