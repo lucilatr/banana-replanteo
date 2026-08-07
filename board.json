@@ -458,7 +458,11 @@
       "subtasks": [
         {
           "id": "s53",
-          "text": "Definir qué otra comida queremos sumar"
+          "text": "Bananas"
+        },
+        {
+          "id": "s116",
+          "text": ""
         }
       ],
       "status": "",
@@ -550,5 +554,5 @@
       "subtasks": []
     }
   ],
-  "seq": 116
+  "seq": 117
 }
