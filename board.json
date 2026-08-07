@@ -300,27 +300,32 @@
         {
           "id": "s104",
           "text": "Diseño Tiempo",
-          "assignee": "CARLINI"
+          "assignee": "CARLINI",
+          "order": 0
         },
         {
           "id": "s105",
           "text": "Diseño contador de pasajeros",
-          "assignee": "CARLINI"
+          "assignee": "CARLINI",
+          "order": 2
         },
         {
           "id": "s108",
           "text": "Diseño contador monetario",
-          "assignee": "CARLINI"
+          "assignee": "CARLINI",
+          "order": 3
         },
         {
           "id": "s109",
           "text": "Diseño radar",
-          "assignee": "CARLINI"
+          "assignee": "CARLINI",
+          "order": 4
         },
         {
           "id": "s110",
           "text": "Diseño altitud",
-          "assignee": "CARLINI"
+          "assignee": "CARLINI",
+          "order": 5
         }
       ],
       "doneAt": null,
@@ -442,7 +447,8 @@
         {
           "id": "s86",
           "text": "ZONA NUCLEAR: asset para sumar a mapa",
-          "assignee": "CARLINI"
+          "assignee": "CARLINI",
+          "order": 1
         },
         {
           "id": "s87",
@@ -536,7 +542,7 @@
       "stages": [
         "trailer"
       ],
-      "order": 77,
+      "order": 6,
       "subtasks": [],
       "assignee": "CARLINI"
     },
