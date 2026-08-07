@@ -427,12 +427,13 @@
         {
           "id": "s87",
           "text": "ZONA NUCLEAR: Alrededores de la zona todo en gris",
-          "assignee": "PABLO"
+          "assignee": "PABLO",
+          "status": "wip"
         }
       ],
       "assignee": "",
       "doneAt": null,
-      "status": ""
+      "status": "wip"
     },
     {
       "id": "t43",
