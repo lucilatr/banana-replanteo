@@ -251,7 +251,9 @@
         "demo",
         "trailer"
       ],
-      "order": 101
+      "order": 101,
+      "doneAt": null,
+      "status": "wip"
     },
     {
       "id": "t35",
