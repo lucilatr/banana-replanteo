@@ -126,7 +126,9 @@
       "prio": true,
       "level": "med",
       "stages": [],
-      "order": 92
+      "order": 92,
+      "doneAt": null,
+      "status": "wip"
     },
     {
       "id": "t17",
