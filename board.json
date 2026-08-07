@@ -178,6 +178,10 @@
           "id": "s111",
           "text": "Mejoras expresión idle",
           "assignee": "MATEO"
+        },
+        {
+          "id": "s113",
+          "text": ""
         }
       ],
       "status": "",
@@ -533,5 +537,5 @@
       "subtasks": []
     }
   ],
-  "seq": 113
+  "seq": 114
 }
