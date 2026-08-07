@@ -527,7 +527,8 @@
         "trailer"
       ],
       "order": 77,
-      "subtasks": []
+      "subtasks": [],
+      "assignee": "CARLINI"
     },
     {
       "id": "t80",
